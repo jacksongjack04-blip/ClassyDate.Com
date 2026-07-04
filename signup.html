@@ -213,8 +213,8 @@
 
         .form-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
         }
 
         /* ---------- GENDER BUTTONS ---------- */
@@ -248,10 +248,6 @@
 
         .gender-option input[type="radio"] {
             display: none;
-        }
-
-        .gender-option input[type="radio"]:checked+.gender-option__label {
-            color: #FAF8F5;
         }
 
         .gender-option--active {
@@ -480,7 +476,7 @@
             }
 
             .form-row {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
 
             .gender-group {
@@ -537,7 +533,7 @@
                 ✅ Account created successfully! Redirecting...
             </div>
 
-            <form id="signup-form" onsubmit="return handleSignup(event)">
+            <form id="signup-form">
                 <!-- Full Name -->
                 <div class="form-group">
                     <label for="fullname">Full Name <span class="required">*</span></label>
@@ -672,10 +668,82 @@
     </main>
 
     <!-- ============================================================ -->
+    <!-- TOAST                                                       -->
+    <!-- ============================================================ -->
+    <div class="toast" id="toast" style="position:fixed;bottom:30px;right:30px;padding:16px 24px;border-radius:12px;background:#1A1A2E;border:1px solid rgba(255,255,255,0.06);box-shadow:0 8px 40px rgba(0,0,0,0.4);z-index:2000;font-size:14px;transform:translateY(100px);opacity:0;transition:all 0.4s ease;max-width:400px;">
+        <span class="toast-icon" id="toast-icon">✅</span>
+        <span id="toast-message">Success!</span>
+    </div>
+
+    <!-- ============================================================ -->
     <!-- SCRIPTS                                                      -->
     <!-- ============================================================ -->
-    <script>
-        // Gender selection
+    <!-- Firebase SDK -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        // ============================================================
+        // FIREBASE CONFIG - REPLACE WITH YOURS
+        // ============================================================
+        import { initializeApp } from "firebase/app";
+        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile, onAuthStateChanged } from "firebase/auth";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCgBJtGQEXc8dOkU4tC-_E9GHAw3Oi4Euk",
+            authDomain: "classydate-687f2.firebaseapp.com",
+            projectId: "classydate-687f2",
+            storageBucket: "classydate-687f2.firebasestorage.app",
+            messagingSenderId: "55681226170",
+            appId: "1:55681226170:web:61f3c824a8db28a05df983",
+            measurementId: "G-B08EF8KDE6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const form = document.getElementById('signup-form');
+        const fullnameInput = document.getElementById('fullname');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const signupBtn = document.getElementById('signup-btn');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+
+        function showToast(message, type = 'success') {
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+
+            toast.className = 'toast ' + type;
+            icon.textContent = type === 'success' ? '✅' : '⚠️';
+            msg.textContent = message;
+
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================================
+        // GENDER SELECTION
+        // ============================================================
         document.querySelectorAll('.gender-option').forEach(function(option) {
             option.addEventListener('click', function() {
                 document.querySelectorAll('.gender-option').forEach(function(el) {
@@ -686,8 +754,10 @@
             });
         });
 
-        // Password strength
-        function checkPasswordStrength(password) {
+        // ============================================================
+        // PASSWORD STRENGTH
+        // ============================================================
+        window.checkPasswordStrength = function(password) {
             const bars = [
                 document.getElementById('strength-1'),
                 document.getElementById('strength-2'),
@@ -696,13 +766,13 @@
             ];
             const hint = document.getElementById('password-hint');
 
-            // Reset bars
             bars.forEach(function(bar) {
                 bar.className = 'bar';
             });
 
             if (password.length === 0) {
                 hint.textContent = 'Use 8+ characters with a mix of letters, numbers & symbols';
+                hint.style.color = 'rgba(255,255,255,0.3)';
                 return;
             }
 
@@ -714,6 +784,11 @@
 
             const levels = ['Weak', 'Weak', 'Medium', 'Strong', 'Strong'];
             const colors = ['weak', 'weak', 'medium', 'strong', 'strong'];
+            const colorMap = {
+                'weak': '#FF2D55',
+                'medium': '#FFD700',
+                'strong': '#00C851'
+            };
 
             for (let i = 0; i < bars.length; i++) {
                 if (i < strength) {
@@ -725,21 +800,30 @@
             hint.style.color = strength >= 3 ? '#00C851' : strength >= 2 ? '#FFD700' : '#FF2D55';
         }
 
-        // Form submission
-        function handleSignup(event) {
-            event.preventDefault();
+        // ============================================================
+        // CHECK IF ALREADY LOGGED IN
+        // ============================================================
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is already logged in, redirect to members page
+                window.location.href = 'members.html';
+            }
+        });
 
-            const fullname = document.getElementById('fullname').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
+        // ============================================================
+        // SIGNUP HANDLER
+        // ============================================================
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullname = fullnameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
             const gender = document.querySelector('input[name="gender"]:checked');
             const month = document.getElementById('month').value;
             const day = document.getElementById('day').value;
             const year = document.getElementById('year').value;
             const terms = document.getElementById('terms').checked;
-
-            const errorMessage = document.getElementById('error-message');
-            const successMessage = document.getElementById('success-message');
 
             // Hide previous messages
             errorMessage.classList.remove('show');
@@ -749,70 +833,112 @@
             if (!fullname || fullname.length < 2) {
                 errorMessage.textContent = '⚠️ Please enter your full name.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
             if (!email || !email.includes('@')) {
                 errorMessage.textContent = '⚠️ Please enter a valid email address.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
             if (password.length < 8) {
                 errorMessage.textContent = '⚠️ Password must be at least 8 characters.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
             if (!gender) {
                 errorMessage.textContent = '⚠️ Please select your gender.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
             if (!month || !day || !year) {
                 errorMessage.textContent = '⚠️ Please enter your date of birth.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
             if (!terms) {
                 errorMessage.textContent = '⚠️ Please agree to the Terms of Use and Privacy Policy.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
-            // Success
-            console.log('✅ Account created for:', email);
+            // Disable button
+            signupBtn.disabled = true;
+            signupBtn.textContent = '⏳ Creating account...';
 
-            const btn = document.getElementById('signup-btn');
-            btn.textContent = '✅ Creating account...';
-            btn.disabled = true;
+            try {
+                // Create user with Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
-            successMessage.textContent = '✅ Account created successfully! Redirecting...';
-            successMessage.classList.add('show');
+                // Update profile with display name
+                await updateProfile(user, {
+                    displayName: fullname
+                });
 
-            setTimeout(function() {
-                btn.textContent = '✅ Welcome!';
-                btn.style.background = 'linear-gradient(135deg, #00C851, #007E33)';
+                // Send email verification
+                await sendEmailVerification(user);
 
-                setTimeout(function() {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            }, 1500);
+                console.log('✅ User created:', user.email);
+                console.log('📧 Verification email sent to:', user.email);
 
-            return false;
-        }
+                // Show success
+                successMessage.textContent = '✅ Account created! Please check your email to verify.';
+                successMessage.classList.add('show');
 
-        // Real-time validation clearing
+                showToast('✅ Account created! Check your email for verification.', 'success');
+
+                // Redirect to login after 3 seconds
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000);
+
+            } catch (error) {
+                console.error('Signup error:', error);
+
+                let message = '⚠️ An error occurred. Please try again.';
+
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        message = '⚠️ This email is already registered. Please login.';
+                        break;
+                    case 'auth/invalid-email':
+                        message = '⚠️ Invalid email format. Please check your email.';
+                        break;
+                    case 'auth/weak-password':
+                        message = '⚠️ Password is too weak. Use at least 8 characters with letters, numbers and symbols.';
+                        break;
+                    case 'auth/too-many-requests':
+                        message = '⚠️ Too many attempts. Please try again later.';
+                        break;
+                    default:
+                        message = '⚠️ ' + error.message;
+                }
+
+                errorMessage.textContent = message;
+                errorMessage.classList.add('show');
+
+                // Re-enable button
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Join Free';
+            }
+        });
+
+        // ============================================================
+        // REAL-TIME VALIDATION CLEARING
+        // ============================================================
         document.querySelectorAll('input, select').forEach(function(input) {
             input.addEventListener('input', function() {
-                document.getElementById('error-message').classList.remove('show');
-                document.getElementById('success-message').classList.remove('show');
+                errorMessage.classList.remove('show');
+                successMessage.classList.remove('show');
             });
         });
 
-        console.log('💎 ClassyDate Sign Up Page loaded!');
+        console.log('💎 ClassyDate Sign Up Page with Firebase Auth!');
     </script>
 
 </body>
