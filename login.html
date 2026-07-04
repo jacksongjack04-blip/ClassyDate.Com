@@ -247,6 +247,12 @@
             transform: translateY(0);
         }
 
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* ---------- DIVIDER ---------- */
         .divider {
             display: flex;
@@ -337,6 +343,49 @@
             display: block;
         }
 
+        /* ---------- TOAST ---------- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: #1A1A2E;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            font-size: 14px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: rgba(0, 200, 81, 0.2);
+        }
+
+        .toast.success .toast-icon {
+            color: #00C851;
+        }
+
+        .toast.error {
+            border-color: rgba(255, 45, 85, 0.2);
+        }
+
+        .toast.error .toast-icon {
+            color: #FF2D55;
+        }
+
+        .toast .toast-icon {
+            margin-right: 8px;
+        }
+
         /* ---------- RESPONSIVE ---------- */
         @media (max-width: 480px) {
             .login-card {
@@ -394,7 +443,7 @@
                 ⚠️ Invalid email or password. Please try again.
             </div>
 
-            <form id="login-form" onsubmit="return handleLogin(event)">
+            <form id="login-form">
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" placeholder="you@example.com" required>
@@ -412,7 +461,7 @@
                     <a href="#">Forgot password?</a>
                 </div>
 
-                <button type="submit" class="btn-login">Log In</button>
+                <button type="submit" class="btn-login" id="login-btn">Log In</button>
             </form>
 
             <div class="divider">or continue with</div>
@@ -433,72 +482,184 @@
     </main>
 
     <!-- ============================================================ -->
+    <!-- TOAST                                                       -->
+    <!-- ============================================================ -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toast-icon">✅</span>
+        <span id="toast-message">Success!</span>
+    </div>
+
+    <!-- ============================================================ -->
     <!-- SCRIPTS                                                      -->
     <!-- ============================================================ -->
-    <script>
-        function handleLogin(event) {
-            event.preventDefault();
+    <!-- Firebase SDK -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"
+            }
+        }
+    </script>
 
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const errorMessage = document.getElementById('error-message');
+    <script type="module">
+        // ============================================================
+        // FIREBASE CONFIG - REPLACE WITH YOURS
+        // ============================================================
+        import { initializeApp } from "firebase/app";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
-            // Simple validation
+        const firebaseConfig = {
+            apiKey: "AIzaSyCgBJtGQEXc8dOkU4tC-_E9GHAw3Oi4Euk",
+            authDomain: "classydate-687f2.firebaseapp.com",
+            projectId: "classydate-687f2",
+            storageBucket: "classydate-687f2.firebasestorage.app",
+            messagingSenderId: "55681226170",
+            appId: "1:55681226170:web:61f3c824a8db28a05df983",
+            measurementId: "G-B08EF8KDE6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const form = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const errorMessage = document.getElementById('error-message');
+        const toast = document.getElementById('toast');
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        let toastTimeout;
+
+        function showToast(message, type = 'success') {
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+
+            toast.className = 'toast ' + type;
+            icon.textContent = type === 'success' ? '✅' : '⚠️';
+            msg.textContent = message;
+
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================================
+        // CHECK IF ALREADY LOGGED IN
+        // ============================================================
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is already logged in, redirect to admin
+                window.location.href = 'admin.html';
+            }
+        });
+
+        // ============================================================
+        // LOGIN HANDLER
+        // ============================================================
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            // Validation
             if (!email || !password) {
                 errorMessage.textContent = '⚠️ Please fill in all fields.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
             if (!email.includes('@')) {
                 errorMessage.textContent = '⚠️ Please enter a valid email address.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
             if (password.length < 6) {
                 errorMessage.textContent = '⚠️ Password must be at least 6 characters.';
                 errorMessage.classList.add('show');
-                return false;
+                return;
             }
 
-            // Hide error if valid
+            // Hide error
             errorMessage.classList.remove('show');
 
-            // Simulate login success
-            console.log('✅ Login successful for:', email);
+            // Disable button
+            loginBtn.disabled = true;
+            loginBtn.textContent = '⏳ Logging in...';
 
-            // Show success feedback
-            const btn = document.querySelector('.btn-login');
-            const originalText = btn.textContent;
-            btn.textContent = '✅ Logging in...';
-            btn.style.opacity = '0.7';
-            btn.disabled = true;
+            try {
+                // Sign in with Firebase
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
-            setTimeout(function() {
-                btn.textContent = '✅ Logged In!';
-                btn.style.background = 'linear-gradient(135deg, #00C851, #007E33)';
-                btn.style.opacity = '1';
+                console.log('✅ Login successful:', user.email);
 
-                // Redirect after 1.5 seconds
-                setTimeout(function() {
-                    window.location.href = 'dashboard.html';
+                // Show success
+                showToast('✅ Welcome back, ' + user.email + '!', 'success');
+
+                // Redirect to admin page
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
                 }, 1500);
-            }, 1500);
 
-            return false;
-        }
+            } catch (error) {
+                console.error('Login error:', error);
 
-        // Remove error when user starts typing
-        document.getElementById('email').addEventListener('input', function() {
-            document.getElementById('error-message').classList.remove('show');
+                // Show error message
+                let message = '⚠️ Invalid email or password. Please try again.';
+
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        message = '⚠️ No account found with this email. Please join first.';
+                        break;
+                    case 'auth/wrong-password':
+                        message = '⚠️ Incorrect password. Please try again.';
+                        break;
+                    case 'auth/invalid-email':
+                        message = '⚠️ Invalid email format. Please check your email.';
+                        break;
+                    case 'auth/too-many-requests':
+                        message = '⚠️ Too many failed attempts. Please try again later.';
+                        break;
+                    case 'auth/user-disabled':
+                        message = '⚠️ This account has been disabled. Please contact support.';
+                        break;
+                    default:
+                        message = '⚠️ ' + error.message;
+                }
+
+                errorMessage.textContent = message;
+                errorMessage.classList.add('show');
+
+                // Re-enable button
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Log In';
+            }
         });
 
-        document.getElementById('password').addEventListener('input', function() {
-            document.getElementById('error-message').classList.remove('show');
+        // ============================================================
+        // REMOVE ERROR ON INPUT
+        // ============================================================
+        emailInput.addEventListener('input', () => {
+            errorMessage.classList.remove('show');
         });
 
-        console.log('💎 ClassyDate Login Page loaded!');
+        passwordInput.addEventListener('input', () => {
+            errorMessage.classList.remove('show');
+        });
+
+        console.log('💎 ClassyDate Login Page with Firebase Auth!');
     </script>
 
 </body>
