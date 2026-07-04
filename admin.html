@@ -10,10 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* ============================================================
-           CLASSYDATE - Admin Page
-           ============================================================ */
-
         * {
             margin: 0;
             padding: 0;
@@ -33,7 +29,6 @@
             color: inherit;
         }
 
-        /* ---------- HEADER ---------- */
         .cb-shell-header {
             position: fixed;
             top: 0;
@@ -104,14 +99,12 @@
             transform: translateY(-2px);
         }
 
-        /* ---------- ADMIN CONTAINER ---------- */
         .admin-wrapper {
             max-width: 1200px;
             margin: 0 auto;
             padding: 100px 20px 60px;
         }
 
-        /* ---------- HEADER ---------- */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -140,7 +133,6 @@
             font-weight: 600;
         }
 
-        /* ---------- STATS CARDS - 2 COLUMNS (ALWAYS) ---------- */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -193,7 +185,6 @@
             margin-top: 4px;
         }
 
-        /* ---------- TOOLBAR ---------- */
         .admin-toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -256,7 +247,6 @@
             gap: 10px;
         }
 
-        /* ---------- BUTTONS ---------- */
         .btn-admin {
             padding: 10px 24px;
             border: none;
@@ -315,7 +305,6 @@
             background: rgba(255, 45, 85, 0.2);
         }
 
-        /* ---------- TABLE ---------- */
         .admin-table-wrapper {
             background: rgba(255, 255, 255, 0.02);
             border-radius: 16px;
@@ -356,7 +345,6 @@
             border-bottom: none;
         }
 
-        /* ---------- MEMBER CELL ---------- */
         .member-cell {
             display: flex;
             align-items: center;
@@ -386,7 +374,6 @@
             gap: 6px;
         }
 
-        /* ---------- BADGES ---------- */
         .badge-small {
             padding: 2px 10px;
             border-radius: 50px;
@@ -409,7 +396,6 @@
             color: #FFA500;
         }
 
-        /* ---------- MODAL ---------- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -496,7 +482,6 @@
             gap: 16px;
         }
 
-        /* ---------- PHOTO UPLOAD - BOTTOM ---------- */
         .photo-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.1);
             border-radius: 12px;
@@ -572,7 +557,6 @@
             background: #FF2D55;
         }
 
-        /* ---------- MODAL ACTIONS ---------- */
         .modal-actions {
             display: flex;
             gap: 12px;
@@ -611,7 +595,6 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
-        /* ---------- TOAST ---------- */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -646,7 +629,6 @@
             margin-right: 8px;
         }
 
-        /* ---------- EMPTY STATE ---------- */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -664,7 +646,6 @@
             margin-bottom: 4px;
         }
 
-        /* ---------- PAGINATION ---------- */
         .pagination {
             display: flex;
             justify-content: center;
@@ -694,7 +675,6 @@
             border-color: rgba(255, 45, 85, 0.15);
         }
 
-        /* ---------- RESPONSIVE ---------- */
         @media (max-width: 768px) {
             .admin-header {
                 flex-direction: column;
@@ -726,7 +706,6 @@
                 justify-content: center;
             }
 
-            /* ✅ STATS - ALWAYS 2 COLUMNS */
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 12px;
@@ -778,7 +757,6 @@
         }
 
         @media (max-width: 480px) {
-            /* ✅ STATS - STILL 2 COLUMNS on mobile */
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
@@ -842,7 +820,7 @@
             <button class="btn-admin btn-admin--add" onclick="openAddModal()">➕ Add New Member</button>
         </div>
 
-        <!-- Stats - 2 Columns (ALWAYS) -->
+        <!-- Stats - 2 Columns -->
         <div class="stats-grid">
             <div class="stat-card-admin">
                 <div class="stat-icon">👥</div>
@@ -926,7 +904,6 @@
             <form id="member-form">
                 <input type="hidden" id="edit-id" value="">
 
-                <!-- Basic Info -->
                 <div class="form-group">
                     <label for="form-name">Full Name *</label>
                     <input type="text" id="form-name" placeholder="John Doe" required>
@@ -1017,7 +994,6 @@
     <!-- ============================================================ -->
     <!-- SCRIPTS                                                      -->
     <!-- ============================================================ -->
-    <!-- Firebase SDK -->
     <script type="importmap">
         {
             "imports": {
@@ -1033,7 +1009,7 @@
         // FIREBASE CONFIG
         // ============================================================
         import { initializeApp } from "firebase/app";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot } from "firebase/firestore";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot } from "firebase/firestore";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
         const firebaseConfig = {
@@ -1401,7 +1377,9 @@
                     verified: verified,
                     premium: premium,
                     online: false,
-                    joined: new Date().toISOString().slice(0, 10)
+                    joined: new Date().toISOString().slice(0, 10),
+                    // ✅ FIX: Always save status as "active"
+                    status: "active"
                 };
 
                 if (editId) {
@@ -1494,6 +1472,8 @@
         // ============================================================
         console.log('💎 ClassyDate Admin Page with Photo Upload!');
         console.log('🔥 Connected to Firebase Firestore & Storage');
+        console.log('✅ Members saved with status: "active"');
     </script>
+
 </body>
 </html>
