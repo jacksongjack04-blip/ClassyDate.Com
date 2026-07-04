@@ -140,7 +140,7 @@
             font-weight: 600;
         }
 
-        /* ---------- STATS CARDS - 2 COLUMNS ---------- */
+        /* ---------- STATS CARDS - 2 COLUMNS (ALWAYS) ---------- */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -191,23 +191,6 @@
             font-size: 13px;
             color: rgba(255, 255, 255, 0.4);
             margin-top: 4px;
-        }
-
-        .stat-card-admin .stat-change {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 50px;
-        }
-
-        .stat-change--up {
-            background: rgba(0, 200, 81, 0.12);
-            color: #00C851;
-        }
-
-        .stat-change--down {
-            background: rgba(255, 45, 85, 0.12);
-            color: #FF2D55;
         }
 
         /* ---------- TOOLBAR ---------- */
@@ -513,7 +496,7 @@
             gap: 16px;
         }
 
-        /* ---------- PHOTO UPLOAD ---------- */
+        /* ---------- PHOTO UPLOAD - BOTTOM ---------- */
         .photo-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.1);
             border-radius: 12px;
@@ -743,6 +726,7 @@
                 justify-content: center;
             }
 
+            /* ✅ STATS - ALWAYS 2 COLUMNS */
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 12px;
@@ -794,8 +778,28 @@
         }
 
         @media (max-width: 480px) {
+            /* ✅ STATS - STILL 2 COLUMNS on mobile */
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card-admin {
+                padding: 12px 14px;
+            }
+
+            .stat-card-admin .stat-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+
+            .stat-card-admin .stat-number {
+                font-size: 18px;
+            }
+
+            .stat-card-admin .stat-label {
+                font-size: 11px;
             }
 
             .photo-preview .preview-item {
@@ -838,7 +842,7 @@
             <button class="btn-admin btn-admin--add" onclick="openAddModal()">➕ Add New Member</button>
         </div>
 
-        <!-- Stats - 2 Columns -->
+        <!-- Stats - 2 Columns (ALWAYS) -->
         <div class="stats-grid">
             <div class="stat-card-admin">
                 <div class="stat-icon">👥</div>
@@ -922,18 +926,7 @@
             <form id="member-form">
                 <input type="hidden" id="edit-id" value="">
 
-                <!-- Photo Upload -->
-                <div class="form-group">
-                    <label>Profile Photo</label>
-                    <div class="photo-upload-area" id="photo-upload-area" onclick="document.getElementById('photo-input').click()">
-                        <div class="upload-icon">📸</div>
-                        <div class="upload-text">Click to upload photo</div>
-                        <div class="upload-hint">Supports JPG, PNG, GIF (Max 5MB)</div>
-                    </div>
-                    <input type="file" id="photo-input" accept="image/*" style="display:none;" multiple>
-                    <div class="photo-preview" id="photo-preview"></div>
-                </div>
-
+                <!-- Basic Info -->
                 <div class="form-group">
                     <label for="form-name">Full Name *</label>
                     <input type="text" id="form-name" placeholder="John Doe" required>
@@ -989,6 +982,20 @@
                 <div class="form-group">
                     <label for="form-interests">Interests (comma separated)</label>
                     <input type="text" id="form-interests" placeholder="Travel, Coffee, Music">
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- PHOTO UPLOAD - AT THE BOTTOM                                -->
+                <!-- ============================================================ -->
+                <div class="form-group">
+                    <label>Profile Photo</label>
+                    <div class="photo-upload-area" id="photo-upload-area" onclick="document.getElementById('photo-input').click()">
+                        <div class="upload-icon">📸</div>
+                        <div class="upload-text">Click to upload photo</div>
+                        <div class="upload-hint">Supports JPG, PNG, GIF (Max 5MB)</div>
+                    </div>
+                    <input type="file" id="photo-input" accept="image/*" style="display:none;" multiple>
+                    <div class="photo-preview" id="photo-preview"></div>
                 </div>
 
                 <div class="modal-actions">
@@ -1051,7 +1058,6 @@
         let currentPage = 1;
         const perPage = 5;
         let editingId = null;
-        let selectedFiles = [];
         let uploadedPhotoUrls = [];
 
         // ============================================================
@@ -1096,18 +1102,14 @@
 
             for (const file of files) {
                 try {
-                    // Create a unique filename
                     const timestamp = Date.now();
                     const filename = `members/${timestamp}_${file.name}`;
                     const storageRef = ref(storage, filename);
 
-                    // Upload to Firebase Storage
                     const snapshot = await uploadBytes(storageRef, file);
                     const downloadURL = await getDownloadURL(snapshot.ref);
 
                     uploadedPhotoUrls.push(downloadURL);
-                    
-                    // Add to preview
                     addPhotoPreview(downloadURL);
 
                 } catch (error) {
@@ -1117,8 +1119,6 @@
             }
 
             showToast(`✅ ${files.length} photo(s) uploaded!`, 'success');
-            
-            // Clear the input
             photoInput.value = '';
         });
 
@@ -1146,7 +1146,6 @@
         function clearPhotoPreviews() {
             photoPreview.innerHTML = '';
             uploadedPhotoUrls = [];
-            selectedFiles = [];
         }
 
         // ============================================================
@@ -1314,7 +1313,7 @@
         }
 
         // ============================================================
-        // CRUD OPERATIONS - FIREBASE
+        // CRUD OPERATIONS
         // ============================================================
 
         window.openAddModal = function() {
@@ -1351,7 +1350,6 @@
             document.getElementById('form-premium').value = member.premium ? 'true' : 'false';
             document.getElementById('form-interests').value = (member.interests || []).join(', ');
 
-            // Show existing photos
             clearPhotoPreviews();
             if (member.photo) {
                 addPhotoPreview(member.photo);
@@ -1367,7 +1365,7 @@
         }
 
         // ============================================================
-        // SAVE MEMBER (with Photo Upload)
+        // SAVE MEMBER
         // ============================================================
         memberForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -1382,15 +1380,12 @@
             const premium = document.getElementById('form-premium').value === 'true';
             const interests = document.getElementById('form-interests').value.split(',').map(s => s.trim()).filter(Boolean);
 
-            // Validation
             if (!name || !email || !age || !gender) {
                 showToast('Please fill in all required fields.', 'error');
                 return;
             }
 
-            // Use first uploaded photo as main photo
             const photo = uploadedPhotoUrls.length > 0 ? uploadedPhotoUrls[0] : '';
-
             const editId = editIdInput.value;
 
             try {
@@ -1410,14 +1405,12 @@
                 };
 
                 if (editId) {
-                    // Update existing member
                     await updateDoc(doc(db, "members", editId), {
                         ...formData,
                         updatedAt: new Date().toISOString()
                     });
                     showToast(`✅ ${name} updated successfully!`, 'success');
                 } else {
-                    // Add new member
                     await addDoc(collection(db, "members"), {
                         ...formData,
                         createdAt: new Date().toISOString()
@@ -1442,7 +1435,7 @@
             const member = members.find(m => m.id === id);
             if (!member) return;
 
-            if (confirm(`Are you sure you want to delete ${member.name}? This action cannot be undone.`)) {
+            if (confirm(`Are you sure you want to delete ${member.name}?`)) {
                 deleteDoc(doc(db, "members", id))
                     .then(() => {
                         showToast(`🗑️ ${member.name} was deleted.`, 'success');
