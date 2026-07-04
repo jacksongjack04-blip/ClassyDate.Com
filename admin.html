@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <title>Admin Dashboard | ClassyDate</title>
-    <meta name="description" content="Admin dashboard for managing ClassyDate members.">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=yes" />
+    <title>ClassyDate - Admin Panel</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         /* ============================================================
            CLASSYDATE - Admin Page
            ============================================================ */
 
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
@@ -110,6 +111,7 @@
             padding: 100px 20px 60px;
         }
 
+        /* ---------- HEADER ---------- */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -138,11 +140,11 @@
             font-weight: 600;
         }
 
-        /* ---------- STATS CARDS ---------- */
+        /* ---------- STATS CARDS - 2 COLUMNS ---------- */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
             margin-bottom: 30px;
         }
 
@@ -152,29 +154,60 @@
             padding: 20px 24px;
             border: 1px solid rgba(255, 255, 255, 0.04);
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .stat-card-admin:hover {
             border-color: rgba(255, 45, 85, 0.1);
         }
 
+        .stat-card-admin .stat-icon {
+            font-size: 28px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 45, 85, 0.08);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-card-admin .stat-info {
+            flex: 1;
+        }
+
         .stat-card-admin .stat-number {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: #FF2D55;
             font-family: 'Georgia', serif;
+            line-height: 1;
         }
 
         .stat-card-admin .stat-label {
             font-size: 13px;
-            color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.4);
             margin-top: 4px;
         }
 
-        .stat-card-admin .stat-icon {
-            font-size: 24px;
-            float: right;
-            opacity: 0.3;
+        .stat-card-admin .stat-change {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 50px;
+        }
+
+        .stat-change--up {
+            background: rgba(0, 200, 81, 0.12);
+            color: #00C851;
+        }
+
+        .stat-change--down {
+            background: rgba(255, 45, 85, 0.12);
+            color: #FF2D55;
         }
 
         /* ---------- TOOLBAR ---------- */
@@ -240,6 +273,7 @@
             gap: 10px;
         }
 
+        /* ---------- BUTTONS ---------- */
         .btn-admin {
             padding: 10px 24px;
             border: none;
@@ -274,16 +308,6 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
-        .btn-admin--danger {
-            background: rgba(255, 45, 85, 0.1);
-            color: #FF2D55;
-            border: 1px solid rgba(255, 45, 85, 0.1);
-        }
-
-        .btn-admin--danger:hover {
-            background: rgba(255, 45, 85, 0.2);
-        }
-
         .btn-admin--edit {
             background: rgba(255, 215, 0, 0.08);
             color: #FFD700;
@@ -308,7 +332,7 @@
             background: rgba(255, 45, 85, 0.2);
         }
 
-        /* ---------- MEMBERS TABLE ---------- */
+        /* ---------- TABLE ---------- */
         .admin-table-wrapper {
             background: rgba(255, 255, 255, 0.02);
             border-radius: 16px;
@@ -349,13 +373,14 @@
             border-bottom: none;
         }
 
-        .admin-table .member-cell {
+        /* ---------- MEMBER CELL ---------- */
+        .member-cell {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .admin-table .member-cell img {
+        .member-cell img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -363,17 +388,23 @@
             background: #1A1A2E;
         }
 
-        .admin-table .member-cell .name {
+        .member-cell .name {
             color: #FAF8F5;
             font-weight: 500;
         }
 
-        .admin-table .member-cell .email {
+        .member-cell .email {
             font-size: 12px;
             color: rgba(255, 255, 255, 0.2);
         }
 
-        .admin-table .badge-small {
+        .actions-cell {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* ---------- BADGES ---------- */
+        .badge-small {
             padding: 2px 10px;
             border-radius: 50px;
             font-size: 11px;
@@ -393,29 +424,6 @@
         .badge-small--pending {
             background: rgba(255, 165, 0, 0.12);
             color: #FFA500;
-        }
-
-        .admin-table .actions-cell {
-            display: flex;
-            gap: 6px;
-        }
-
-        /* ---------- EMPTY STATE ---------- */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: rgba(255, 255, 255, 0.3);
-        }
-
-        .empty-state .icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        .empty-state h3 {
-            color: #FAF8F5;
-            font-size: 20px;
-            margin-bottom: 4px;
         }
 
         /* ---------- MODAL ---------- */
@@ -460,11 +468,11 @@
             margin-bottom: 24px;
         }
 
-        .modal .form-group {
+        .form-group {
             margin-bottom: 16px;
         }
 
-        .modal .form-group label {
+        .form-group label {
             display: block;
             font-size: 13px;
             font-weight: 600;
@@ -472,9 +480,9 @@
             margin-bottom: 4px;
         }
 
-        .modal .form-group input,
-        .modal .form-group select,
-        .modal .form-group textarea {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 12px 14px;
             background: rgba(255, 255, 255, 0.04);
@@ -487,31 +495,108 @@
             transition: all 0.3s ease;
         }
 
-        .modal .form-group input:focus,
-        .modal .form-group select:focus,
-        .modal .form-group textarea:focus {
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             border-color: #FF2D55;
             background: rgba(255, 45, 85, 0.04);
         }
 
-        .modal .form-group textarea {
+        .form-group textarea {
             resize: vertical;
             min-height: 80px;
         }
 
-        .modal .form-row {
+        .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
 
-        .modal .modal-actions {
+        /* ---------- PHOTO UPLOAD ---------- */
+        .photo-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .photo-upload-area:hover {
+            border-color: #FF2D55;
+            background: rgba(255, 45, 85, 0.05);
+        }
+
+        .photo-upload-area .upload-icon {
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 8px;
+        }
+
+        .photo-upload-area .upload-text {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+        }
+
+        .photo-upload-area .upload-hint {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .photo-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .photo-preview .preview-item {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .photo-preview .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview .preview-item .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-preview .preview-item .remove-btn:hover {
+            background: #FF2D55;
+        }
+
+        /* ---------- MODAL ACTIONS ---------- */
+        .modal-actions {
             display: flex;
             gap: 12px;
             margin-top: 24px;
         }
 
-        .modal .modal-actions button {
+        .modal-actions button {
             flex: 1;
             padding: 12px;
             border: none;
@@ -523,23 +608,23 @@
             font-family: inherit;
         }
 
-        .modal .btn-modal-save {
+        .btn-modal-save {
             background: linear-gradient(135deg, #FF2D55, #FF0040);
             color: #FAF8F5;
         }
 
-        .modal .btn-modal-save:hover {
+        .btn-modal-save:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(255, 45, 85, 0.3);
         }
 
-        .modal .btn-modal-cancel {
+        .btn-modal-cancel {
             background: rgba(255, 255, 255, 0.04);
             color: rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .modal .btn-modal-cancel:hover {
+        .btn-modal-cancel:hover {
             background: rgba(255, 255, 255, 0.08);
         }
 
@@ -570,24 +655,34 @@
             border-color: rgba(0, 200, 81, 0.2);
         }
 
-        .toast.success .toast-icon {
-            color: #00C851;
-        }
-
         .toast.error {
             border-color: rgba(255, 45, 85, 0.2);
-        }
-
-        .toast.error .toast-icon {
-            color: #FF2D55;
         }
 
         .toast .toast-icon {
             margin-right: 8px;
         }
 
+        /* ---------- EMPTY STATE ---------- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            color: #FAF8F5;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
         /* ---------- PAGINATION ---------- */
-        .admin-pagination {
+        .pagination {
             display: flex;
             justify-content: center;
             gap: 8px;
@@ -595,7 +690,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .admin-pagination button {
+        .pagination button {
             padding: 6px 14px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.04);
@@ -606,23 +701,17 @@
             font-family: inherit;
         }
 
-        .admin-pagination button:hover {
+        .pagination button:hover {
             background: rgba(255, 255, 255, 0.06);
         }
 
-        .admin-pagination button.active {
+        .pagination button.active {
             background: rgba(255, 45, 85, 0.12);
             color: #FF2D55;
             border-color: rgba(255, 45, 85, 0.15);
         }
 
         /* ---------- RESPONSIVE ---------- */
-        @media (max-width: 1024px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         @media (max-width: 768px) {
             .admin-header {
                 flex-direction: column;
@@ -656,6 +745,15 @@
 
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .stat-card-admin {
+                padding: 16px;
+            }
+
+            .stat-card-admin .stat-number {
+                font-size: 22px;
             }
 
             .admin-table {
@@ -679,6 +777,20 @@
             .modal .form-row {
                 grid-template-columns: 1fr;
             }
+
+            .actions-cell {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .actions-cell .btn-admin {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 480px) {
@@ -686,18 +798,9 @@
                 grid-template-columns: 1fr;
             }
 
-            .admin-table .actions-cell {
-                flex-direction: column;
-                gap: 4px;
-            }
-
-            .admin-table .actions-cell .btn-admin {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .modal .modal-actions {
-                flex-direction: column;
+            .photo-preview .preview-item {
+                width: 60px;
+                height: 60px;
             }
         }
     </style>
@@ -709,15 +812,15 @@
     <!-- ============================================================ -->
     <header class="cb-shell-header" role="banner">
         <div class="cb-shell-header__inner">
-            <a class="cb-shell-brand" href="index.html" aria-label="ClassyDate">
+            <a class="cb-shell-brand" href="/" aria-label="ClassyDate">
                 <span class="icon">💎</span>
                 Classy<span>Date</span>
             </a>
 
             <div class="cb-shell-actions">
                 <a href="members.html" class="cb-shell-button cb-shell-button--secondary">Members</a>
+                <a href="login.html" class="cb-shell-button cb-shell-button--secondary">Log in</a>
                 <a href="admin.html" class="cb-shell-button cb-shell-button--primary">Admin</a>
-                <a href="login.html" class="cb-shell-button cb-shell-button--secondary">Log out</a>
             </div>
         </div>
     </header>
@@ -735,27 +838,35 @@
             <button class="btn-admin btn-admin--add" onclick="openAddModal()">➕ Add New Member</button>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-grid" id="stats-grid">
+        <!-- Stats - 2 Columns -->
+        <div class="stats-grid">
             <div class="stat-card-admin">
-                <span class="stat-icon">👥</span>
-                <div class="stat-number" id="total-members">0</div>
-                <div class="stat-label">Total Members</div>
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="total-members">0</div>
+                    <div class="stat-label">Total Members</div>
+                </div>
             </div>
             <div class="stat-card-admin">
-                <span class="stat-icon">🟢</span>
-                <div class="stat-number" id="online-members">0</div>
-                <div class="stat-label">Online Now</div>
+                <div class="stat-icon">🟢</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="online-members">0</div>
+                    <div class="stat-label">Online Now</div>
+                </div>
             </div>
             <div class="stat-card-admin">
-                <span class="stat-icon">✅</span>
-                <div class="stat-number" id="verified-members">0</div>
-                <div class="stat-label">Verified</div>
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="verified-members">0</div>
+                    <div class="stat-label">Verified</div>
+                </div>
             </div>
             <div class="stat-card-admin">
-                <span class="stat-icon">🆕</span>
-                <div class="stat-number" id="new-members">0</div>
-                <div class="stat-label">New This Month</div>
+                <div class="stat-icon">🆕</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="new-members">0</div>
+                    <div class="stat-label">New This Month</div>
+                </div>
             </div>
         </div>
 
@@ -793,12 +904,10 @@
                     </tr>
                 </thead>
                 <tbody id="admin-table-body">
-                    <tr><td colspan="6" style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);">Loading members from Firebase...</td></tr>
+                    <tr><td colspan="6" style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);">Loading members...</td></tr>
                 </tbody>
             </table>
-            <div class="admin-pagination" id="admin-pagination">
-                <!-- Pagination rendered by JavaScript -->
-            </div>
+            <div class="pagination" id="admin-pagination"></div>
         </div>
     </main>
 
@@ -810,8 +919,20 @@
             <h2 id="modal-title">Add New Member</h2>
             <p class="modal-subtitle" id="modal-subtitle">Fill in the details to add a new member.</p>
 
-            <form id="member-form" onsubmit="saveMember(event)">
+            <form id="member-form">
                 <input type="hidden" id="edit-id" value="">
+
+                <!-- Photo Upload -->
+                <div class="form-group">
+                    <label>Profile Photo</label>
+                    <div class="photo-upload-area" id="photo-upload-area" onclick="document.getElementById('photo-input').click()">
+                        <div class="upload-icon">📸</div>
+                        <div class="upload-text">Click to upload photo</div>
+                        <div class="upload-hint">Supports JPG, PNG, GIF (Max 5MB)</div>
+                    </div>
+                    <input type="file" id="photo-input" accept="image/*" style="display:none;" multiple>
+                    <div class="photo-preview" id="photo-preview"></div>
+                </div>
 
                 <div class="form-group">
                     <label for="form-name">Full Name *</label>
@@ -848,11 +969,6 @@
                     <textarea id="form-bio" placeholder="Write a short bio about this member..."></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label for="form-photo">Photo URL</label>
-                    <input type="text" id="form-photo" placeholder="https://randomuser.me/api/portraits/...">
-                </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="form-verified">Verified</label>
@@ -884,11 +1000,11 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- TOAST NOTIFICATION                                          -->
+    <!-- TOAST                                                       -->
     <!-- ============================================================ -->
     <div class="toast" id="toast">
         <span class="toast-icon" id="toast-icon">✅</span>
-        <span id="toast-message">Member saved successfully!</span>
+        <span id="toast-message">Success!</span>
     </div>
 
     <!-- ============================================================ -->
@@ -899,17 +1015,19 @@
         {
             "imports": {
                 "firebase/app": "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js"
             }
         }
     </script>
 
     <script type="module">
         // ============================================================
-        // FIREBASE CONFIG - REPLACE WITH YOURS
+        // FIREBASE CONFIG
         // ============================================================
         import { initializeApp } from "firebase/app";
-        import { getFirestore, collection, doc, addDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "firebase/firestore";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot } from "firebase/firestore";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCgBJtGQEXc8dOkU4tC-_E9GHAw3Oi4Euk",
@@ -921,9 +1039,9 @@
             measurementId: "G-B08EF8KDE6"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         // ============================================================
         // STATE
@@ -933,17 +1051,20 @@
         let currentPage = 1;
         const perPage = 5;
         let editingId = null;
-        let isLoading = true;
+        let selectedFiles = [];
+        let uploadedPhotoUrls = [];
 
         // ============================================================
         // DOM REFS
         // ============================================================
         const tbody = document.getElementById('admin-table-body');
-        const paginationContainer = document.getElementById('admin-pagination');
+        const pagination = document.getElementById('admin-pagination');
         const modalOverlay = document.getElementById('modal-overlay');
         const memberForm = document.getElementById('member-form');
         const editIdInput = document.getElementById('edit-id');
         const toast = document.getElementById('toast');
+        const photoInput = document.getElementById('photo-input');
+        const photoPreview = document.getElementById('photo-preview');
 
         // ============================================================
         // LISTEN TO FIREBASE REALTIME UPDATES
@@ -953,19 +1074,80 @@
         onSnapshot(q, (snapshot) => {
             members = [];
             snapshot.forEach((doc) => {
-                members.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
+                members.push({ id: doc.id, ...doc.data() });
             });
-            isLoading = false;
+            filteredMembers = [...members];
             updateStats();
             filterMembers();
         }, (error) => {
             console.error('Error loading members:', error);
             showToast('Error loading members from Firebase', 'error');
-            isLoading = false;
         });
+
+        // ============================================================
+        // PHOTO UPLOAD HANDLING
+        // ============================================================
+        photoInput.addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            
+            if (files.length === 0) return;
+
+            showToast(`📸 Uploading ${files.length} photo(s)...`, 'info');
+
+            for (const file of files) {
+                try {
+                    // Create a unique filename
+                    const timestamp = Date.now();
+                    const filename = `members/${timestamp}_${file.name}`;
+                    const storageRef = ref(storage, filename);
+
+                    // Upload to Firebase Storage
+                    const snapshot = await uploadBytes(storageRef, file);
+                    const downloadURL = await getDownloadURL(snapshot.ref);
+
+                    uploadedPhotoUrls.push(downloadURL);
+                    
+                    // Add to preview
+                    addPhotoPreview(downloadURL);
+
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    showToast('❌ Failed to upload: ' + file.name, 'error');
+                }
+            }
+
+            showToast(`✅ ${files.length} photo(s) uploaded!`, 'success');
+            
+            // Clear the input
+            photoInput.value = '';
+        });
+
+        function addPhotoPreview(url) {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+                <img src="${url}" alt="Preview">
+                <button class="remove-btn" onclick="removePhoto('${url}')">×</button>
+            `;
+            photoPreview.appendChild(previewItem);
+        }
+
+        window.removePhoto = function(url) {
+            uploadedPhotoUrls = uploadedPhotoUrls.filter(u => u !== url);
+            const items = photoPreview.querySelectorAll('.preview-item');
+            for (const item of items) {
+                const img = item.querySelector('img');
+                if (img && img.src === url) {
+                    item.remove();
+                }
+            }
+        };
+
+        function clearPhotoPreviews() {
+            photoPreview.innerHTML = '';
+            uploadedPhotoUrls = [];
+            selectedFiles = [];
+        }
 
         // ============================================================
         // STATS
@@ -991,7 +1173,7 @@
         // ============================================================
         // FILTER
         // ============================================================
-        function filterMembers() {
+        window.filterMembers = function() {
             const search = document.getElementById('search-input').value.toLowerCase().trim();
             const statusFilter = document.getElementById('filter-status').value;
             const verifiedFilter = document.getElementById('filter-verified').value;
@@ -1014,14 +1196,22 @@
             renderPagination();
         }
 
-        // Expose filterMembers to window for inline onclick
-        window.filterMembers = filterMembers;
-
         // ============================================================
-        // RENDER TABLE        // ============================================================
+        // RENDER TABLE
+        // ============================================================
         function renderTable() {
-            if (isLoading) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);">Loading members from Firebase...</td></tr>`;
+            if (members.length === 0 && filteredMembers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="icon">👤</div>
+                                <h3>No members yet</h3>
+                                <p>Add your first member using the "Add New Member" button above.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
@@ -1033,9 +1223,9 @@
                     <tr>
                         <td colspan="6">
                             <div class="empty-state">
-                                <div class="icon">👤</div>
-                                <h3>No members found</h3>
-                                <p>Try adjusting your filters or add a new member.</p>
+                                <div class="icon">🔍</div>
+                                <h3>No results found</h3>
+                                <p>Try adjusting your search or filters.</p>
                             </div>
                         </td>
                     </tr>
@@ -1044,37 +1234,42 @@
             }
 
             tbody.innerHTML = pageMembers.map(m => {
-                const photo = m.photo || 'https://randomuser.me/api/portraits/lego/1.jpg';
+                const photo = m.photo || '';
+                const name = m.name || 'Unknown';
+                const email = m.email || 'No email';
+                const location = m.location || '—';
+                const gender = m.gender || '—';
+                const online = m.online || false;
+                const verified = m.verified || false;
+                const premium = m.premium || false;
+
                 return `
                     <tr>
                         <td>
                             <div class="member-cell">
-                                <img src="${photo}" alt="${m.name || 'Member'}" loading="lazy">
+                                ${photo ? `<img src="${photo}" alt="${name}">` : `<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>`}
                                 <div>
-                                    <div class="name">${m.name || 'Unknown'}</div>
-                                    <div class="email">${m.email || 'No email'}</div>
+                                    <div class="name">${name}</div>
+                                    <div class="email">${email}</div>
                                 </div>
                             </div>
                         </td>
-                        <td>${m.gender === 'male' ? '👨 Male' : m.gender === 'female' ? '👩 Female' : '—'}</td>
-                        <td>${m.location || '—'}</td>
+                        <td>${gender === 'male' ? '👨 Male' : gender === 'female' ? '👩 Female' : '—'}</td>
+                        <td>${location}</td>
                         <td>
                             <span style="display:flex;align-items:center;gap:6px;">
-                                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.online ? '#00C851' : 'rgba(255,255,255,0.2)'};"></span>
-                                ${m.online ? 'Online' : 'Offline'}
+                                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${online ? '#00C851' : 'rgba(255,255,255,0.2)'};"></span>
+                                ${online ? 'Online' : 'Offline'}
                             </span>
                         </td>
                         <td>
-                            ${m.verified
-                                ? '<span class="badge-small badge-small--verified">✅ Verified</span>'
-                                : '<span class="badge-small badge-small--pending">⏳ Pending</span>'
-                            }
-                            ${m.premium ? '<span class="badge-small badge-small--premium">⭐ Premium</span>' : ''}
+                            ${verified ? '<span class="badge-small badge-small--verified">✅ Verified</span>' : '<span class="badge-small badge-small--pending">⏳ Pending</span>'}
+                            ${premium ? '<span class="badge-small badge-small--premium">⭐ Premium</span>' : ''}
                         </td>
                         <td>
                             <div class="actions-cell">
-                                <button class="btn-admin btn-admin--edit" onclick="window.openEditModal('${m.id}')">✏️ Edit</button>
-                                <button class="btn-admin btn-admin--delete" onclick="window.deleteMember('${m.id}')">🗑️ Delete</button>
+                                <button class="btn-admin btn-admin--edit" onclick="openEditModal('${m.id}')">✏️ Edit</button>
+                                <button class="btn-admin btn-admin--delete" onclick="deleteMember('${m.id}')">🗑️ Delete</button>
                             </div>
                         </td>
                     </tr>
@@ -1089,7 +1284,7 @@
             const totalPages = Math.ceil(filteredMembers.length / perPage);
 
             if (totalPages <= 1) {
-                paginationContainer.innerHTML = '';
+                pagination.innerHTML = '';
                 return;
             }
 
@@ -1101,13 +1296,13 @@
             }
 
             if (totalPages > 5) {
-                html += `<span style="color:rgba(255,255,255,0.15);">…</span>`;
+                html += `<span style="color:rgba(255,255,255,0.2);">…</span>`;
                 html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
             }
 
             html += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>›</button>`;
 
-            paginationContainer.innerHTML = html;
+            pagination.innerHTML = html;
         }
 
         window.goToPage = function(page) {
@@ -1122,7 +1317,6 @@
         // CRUD OPERATIONS - FIREBASE
         // ============================================================
 
-        // Open Add Modal
         window.openAddModal = function() {
             editingId = null;
             document.getElementById('modal-title').textContent = 'Add New Member';
@@ -1130,10 +1324,10 @@
             document.getElementById('modal-save-btn').textContent = '💾 Save Member';
             memberForm.reset();
             editIdInput.value = '';
+            clearPhotoPreviews();
             modalOverlay.classList.add('active');
         }
 
-        // Open Edit Modal
         window.openEditModal = function(id) {
             const member = members.find(m => m.id === id);
             if (!member) {
@@ -1153,84 +1347,110 @@
             document.getElementById('form-gender').value = member.gender || '';
             document.getElementById('form-location').value = member.location || '';
             document.getElementById('form-bio').value = member.bio || '';
-            document.getElementById('form-photo').value = member.photo || '';
             document.getElementById('form-verified').value = member.verified ? 'true' : 'false';
             document.getElementById('form-premium').value = member.premium ? 'true' : 'false';
             document.getElementById('form-interests').value = (member.interests || []).join(', ');
 
+            // Show existing photos
+            clearPhotoPreviews();
+            if (member.photo) {
+                addPhotoPreview(member.photo);
+                uploadedPhotoUrls.push(member.photo);
+            }
+
             modalOverlay.classList.add('active');
         }
 
-        // Close Modal
         window.closeModal = function() {
             modalOverlay.classList.remove('active');
+            clearPhotoPreviews();
         }
 
-        // Save Member (Add or Update)
-        window.saveMember = async function(event) {
-            event.preventDefault();
+        // ============================================================
+        // SAVE MEMBER (with Photo Upload)
+        // ============================================================
+        memberForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-            const formData = {
-                name: document.getElementById('form-name').value.trim(),
-                email: document.getElementById('form-email').value.trim(),
-                age: parseInt(document.getElementById('form-age').value),
-                gender: document.getElementById('form-gender').value,
-                location: document.getElementById('form-location').value.trim(),
-                bio: document.getElementById('form-bio').value.trim(),
-                photo: document.getElementById('form-photo').value.trim(),
-                verified: document.getElementById('form-verified').value === 'true',
-                premium: document.getElementById('form-premium').value === 'true',
-                interests: document.getElementById('form-interests').value.split(',').map(s => s.trim()).filter(Boolean),
-                online: false,
-                joined: new Date().toISOString().slice(0, 10)
-            };
+            const name = document.getElementById('form-name').value.trim();
+            const email = document.getElementById('form-email').value.trim();
+            const age = parseInt(document.getElementById('form-age').value);
+            const gender = document.getElementById('form-gender').value;
+            const location = document.getElementById('form-location').value.trim();
+            const bio = document.getElementById('form-bio').value.trim();
+            const verified = document.getElementById('form-verified').value === 'true';
+            const premium = document.getElementById('form-premium').value === 'true';
+            const interests = document.getElementById('form-interests').value.split(',').map(s => s.trim()).filter(Boolean);
 
             // Validation
-            if (!formData.name || !formData.email || !formData.age || !formData.gender) {
+            if (!name || !email || !age || !gender) {
                 showToast('Please fill in all required fields.', 'error');
                 return;
             }
 
+            // Use first uploaded photo as main photo
+            const photo = uploadedPhotoUrls.length > 0 ? uploadedPhotoUrls[0] : '';
+
             const editId = editIdInput.value;
 
             try {
+                const formData = {
+                    name: name,
+                    email: email,
+                    age: age,
+                    gender: gender,
+                    location: location || '',
+                    bio: bio || '',
+                    photo: photo,
+                    interests: interests,
+                    verified: verified,
+                    premium: premium,
+                    online: false,
+                    joined: new Date().toISOString().slice(0, 10)
+                };
+
                 if (editId) {
                     // Update existing member
                     await updateDoc(doc(db, "members", editId), {
                         ...formData,
                         updatedAt: new Date().toISOString()
                     });
-                    showToast(`✅ ${formData.name} updated successfully!`, 'success');
+                    showToast(`✅ ${name} updated successfully!`, 'success');
                 } else {
                     // Add new member
                     await addDoc(collection(db, "members"), {
                         ...formData,
                         createdAt: new Date().toISOString()
                     });
-                    showToast(`✅ ${formData.name} added successfully!`, 'success');
+                    showToast(`✅ ${name} added successfully!`, 'success');
                 }
 
                 closeModal();
                 memberForm.reset();
+                clearPhotoPreviews();
+
             } catch (error) {
                 console.error('Error saving member:', error);
                 showToast('Error saving member: ' + error.message, 'error');
             }
-        }
+        });
 
-        // Delete Member
-        window.deleteMember = async function(id) {
+        // ============================================================
+        // DELETE MEMBER
+        // ============================================================
+        window.deleteMember = function(id) {
             const member = members.find(m => m.id === id);
             if (!member) return;
 
             if (confirm(`Are you sure you want to delete ${member.name}? This action cannot be undone.`)) {
-                try {
-                    await deleteDoc(doc(db, "members", id));
-                    showToast(`🗑️ ${member.name} was deleted.`, 'success');
-                } catch (error) {
-                    console.error('Error deleting member:', error);
-                    showToast('Error deleting member: ' + error.message, 'error');
-                }
+                deleteDoc(doc(db, "members", id))
+                    .then(() => {
+                        showToast(`🗑️ ${member.name} was deleted.`, 'success');
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting member:', error);
+                        showToast('Error deleting member: ' + error.message, 'error');
+                    });
             }
         }
 
@@ -1279,10 +1499,8 @@
         // ============================================================
         // INITIAL RENDER
         // ============================================================
-        // The onSnapshot listener will handle initial render
-
-        console.log('💎 ClassyDate Admin Page with Firebase!');
-        console.log('🔥 Connected to Firebase Firestore');
+        console.log('💎 ClassyDate Admin Page with Photo Upload!');
+        console.log('🔥 Connected to Firebase Firestore & Storage');
     </script>
 </body>
 </html>
