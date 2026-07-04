@@ -634,7 +634,7 @@
         <div class="members-header">
             <div>
                 <h1>Browse <span>Members</span></h1>
-                <span class="member-count">Showing <strong id="total-count">12</strong> members</span>
+                <span class="member-count">Showing <strong id="total-count">0</strong> members</span>
             </div>
             <div class="view-toggle">
                 <button class="active" onclick="setView('grid')" id="grid-view">▦ Grid</button>
@@ -688,7 +688,7 @@
 
         <!-- Members Grid -->
         <div class="members-grid" id="members-grid">
-            <!-- Members will be rendered here by JavaScript -->
+            <div style="text-align:center;padding:40px;grid-column:1/-1;color:rgba(255,255,255,0.3);">Loading members...</div>
         </div>
 
         <!-- Pagination -->
@@ -702,302 +702,165 @@
     <!-- ============================================================ -->
     <!-- SCRIPTS                                                      -->
     <!-- ============================================================ -->
-    <script>
+    <!-- Firebase SDK -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"
+            }
+        }
+    </script>
+
+    <script type="module">
         // ============================================================
-        // MEMBER DATA (Static for now - will come from admin/backend)
+        // FIREBASE CONFIG - REPLACE WITH YOURS
         // ============================================================
-        const membersData = [{
-            id: 1,
-            name: "Sarah Johnson",
-            age: 28,
-            gender: "female",
-            location: "New York, USA",
-            bio: "Love traveling and coffee. Looking for someone who shares my passion for adventure.",
-            photo: "https://randomuser.me/api/portraits/women/44.jpg",
-            verified: true,
-            premium: true,
-            online: true,
-            new: false,
-            joined: "2025-01-15",
-            interests: ["Travel", "Coffee", "Photography"]
-        }, {
-            id: 2,
-            name: "Michael Chen",
-            age: 32,
-            gender: "male",
-            location: "San Francisco, USA",
-            bio: "Tech enthusiast, foodie, and dog lover. Let's explore the world together.",
-            photo: "https://randomuser.me/api/portraits/men/32.jpg",
-            verified: true,
-            premium: false,
-            online: true,
-            new: true,
-            joined: "2026-03-10",
-            interests: ["Tech", "Food", "Dogs"]
-        }, {
-            id: 3,
-            name: "Emily Rodriguez",
-            age: 26,
-            gender: "female",
-            location: "Los Angeles, USA",
-            bio: "Yoga instructor, beach lover, and hopeless romantic. Here for something real.",
-            photo: "https://randomuser.me/api/portraits/women/68.jpg",
-            verified: false,
-            premium: false,
-            online: false,
-            new: false,
-            joined: "2025-11-20",
-            interests: ["Yoga", "Beach", "Music"]
-        }, {
-            id: 4,
-            name: "James Wilson",
-            age: 35,
-            gender: "male",
-            location: "London, UK",
-            bio: "Finance professional who loves hiking and good wine. Looking for my partner in crime.",
-            photo: "https://randomuser.me/api/portraits/men/52.jpg",
-            verified: true,
-            premium: true,
-            online: true,
-            new: false,
-            joined: "2024-08-05",
-            interests: ["Hiking", "Wine", "Travel"]
-        }, {
-            id: 5,
-            name: "Aisha Patel",
-            age: 29,
-            gender: "female",
-            location: "Toronto, Canada",
-            bio: "Healthcare worker, bookworm, and foodie. Looking for someone to share stories with.",
-            photo: "https://randomuser.me/api/portraits/women/90.jpg",
-            verified: true,
-            premium: false,
-            online: false,
-            new: true,
-            joined: "2026-02-14",
-            interests: ["Books", "Food", "Healthcare"]
-        }, {
-            id: 6,
-            name: "David Kim",
-            age: 31,
-            gender: "male",
-            location: "Seoul, South Korea",
-            bio: "Graphic designer who loves photography and K-pop. Let's make beautiful memories.",
-            photo: "https://randomuser.me/api/portraits/men/22.jpg",
-            verified: true,
-            premium: true,
-            online: true,
-            new: false,
-            joined: "2025-05-30",
-            interests: ["Design", "Photography", "K-pop"]
-        }, {
-            id: 7,
-            name: "Maria Santos",
-            age: 27,
-            gender: "female",
-            location: "Manila, Philippines",
-            bio: "Teacher, dancer, and animal lover. Looking for a kind heart and a warm smile.",
-            photo: "https://randomuser.me/api/portraits/women/33.jpg",
-            verified: false,
-            premium: false,
-            online: true,
-            new: false,
-            joined: "2025-09-12",
-            interests: ["Dancing", "Animals", "Teaching"]
-        }, {
-            id: 8,
-            name: "Thomas Brown",
-            age: 40,
-            gender: "male",
-            location: "Sydney, Australia",
-            bio: "Entrepreneur, surfer, and dad. Ready for a new chapter with the right person.",
-            photo: "https://randomuser.me/api/portraits/men/75.jpg",
-            verified: true,
-            premium: true,
-            online: false,
-            new: false,
-            joined: "2024-03-18",
-            interests: ["Surfing", "Business", "Family"]
-        }, {
-            id: 9,
-            name: "Linda Park",
-            age: 24,
-            gender: "female",
-            location: "Busan, South Korea",
-            bio: "Student, artist, and dreamer. Here to find someone who inspires me.",
-            photo: "https://randomuser.me/api/portraits/women/17.jpg",
-            verified: false,
-            premium: false,
-            online: true,
-            new: true,
-            joined: "2026-04-01",
-            interests: ["Art", "Music", "Fashion"]
-        }, {
-            id: 10,
-            name: "Robert Smith",
-            age: 38,
-            gender: "male",
-            location: "Chicago, USA",
-            bio: "Engineer, musician, and outdoor enthusiast. Looking for someone to share the journey.",
-            photo: "https://randomuser.me/api/portraits/men/43.jpg",
-            verified: true,
-            premium: false,
-            online: false,
-            new: false,
-            joined: "2025-07-22",
-            interests: ["Music", "Outdoors", "Engineering"]
-        }, {
-            id: 11,
-            name: "Nina Garcia",
-            age: 30,
-            gender: "female",
-            location: "Madrid, Spain",
-            bio: "Flamenco dancer, chef, and travel blogger. Life is better with good food and good company.",
-            photo: "https://randomuser.me/api/portraits/women/55.jpg",
-            verified: true,
-            premium: true,
-            online: true,
-            new: false,
-            joined: "2024-12-03",
-            interests: ["Dance", "Cooking", "Travel"]
-        }, {
-            id: 12,
-            name: "Alex Johnson",
-            age: 33,
-            gender: "male",
-            location: "Melbourne, Australia",
-            bio: "Writer, runner, and coffee enthusiast. Looking for my muse and adventure partner.",
-            photo: "https://randomuser.me/api/portraits/men/11.jpg",
-            verified: true,
-            premium: false,
-            online: true,
-            new: true,
-            joined: "2026-03-25",
-            interests: ["Writing", "Running", "Coffee"]
-        }];
+        import { initializeApp } from "firebase/app";
+        import { getFirestore, collection, getDocs, query, where, orderBy, onSnapshot } from "firebase/firestore";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCgBJtGQEXc8dOkU4tC-_E9GHAw3Oi4Euk",
+            authDomain: "classydate-687f2.firebaseapp.com",
+            projectId: "classydate-687f2",
+            storageBucket: "classydate-687f2.firebasestorage.app",
+            messagingSenderId: "55681226170",
+            appId: "1:55681226170:web:61f3c824a8db28a05df983",
+            measurementId: "G-B08EF8KDE6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
         // ============================================================
         // STATE
         // ============================================================
+        let allMembers = [];
+        let filteredMembers = [];
         let currentView = 'grid';
         let currentPage = 1;
         const perPage = 6;
-        let filteredMembers = [...membersData];
+        let isLoading = true;
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const grid = document.getElementById('members-grid');
+        const pagination = document.getElementById('pagination');
+        const totalCount = document.getElementById('total-count');
+
+        // ============================================================
+        // LISTEN TO FIREBASE REALTIME UPDATES
+        // ============================================================
+        const q = query(collection(db, "members"), where("status", "==", "active"), orderBy("createdAt", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            allMembers = [];
+            snapshot.forEach((doc) => {
+                allMembers.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            isLoading = false;
+            filteredMembers = [...allMembers];
+            applyFilters();
+        }, (error) => {
+            console.error('Error loading members:', error);
+            grid.innerHTML = `
+                <div class="empty-state" style="grid-column:1/-1;">
+                    <div class="icon">⚠️</div>
+                    <h3>Error loading members</h3>
+                    <p>Please refresh the page or try again later.</p>
+                </div>
+            `;
+            isLoading = false;
+        });
 
         // ============================================================
         // RENDER FUNCTIONS
         // ============================================================
         function renderMembers(members) {
-            const grid = document.getElementById('members-grid');
-
-            if (members.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state" style="grid-column:1/-1;">
-                        <div class="icon">🔍</div>
-                        <h3>No members found</h3>
-                        <p>Try adjusting your filters to see more results.</p>
-                    </div>
-                `;
-                document.getElementById('total-count').textContent = '0';
+            if (isLoading) {
+                grid.innerHTML = `<div style="text-align:center;padding:40px;grid-column:1/-1;color:rgba(255,255,255,0.3);">Loading members...</div>`;
                 return;
             }
 
-            document.getElementById('total-count').textContent = members.length;
+            // Show only active members
+            const activeMembers = members.filter(m => m.status === 'active');
 
-            grid.innerHTML = members.map(member => `
-                <div class="member-card" data-id="${member.id}">
-                    <div class="member-card__image">
-                        <img src="${member.photo}" alt="${member.name}" loading="lazy">
-                        <div class="member-card__badges">
-                            ${member.verified ? '<span class="badge badge--verified">✓ Verified</span>' : ''}
-                            ${member.premium ? '<span class="badge badge--premium">⭐ Premium</span>' : ''}
-                            ${member.new ? '<span class="badge badge--new">🆕 New</span>' : ''}
+            if (activeMembers.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <div class="icon">🔍</div>
+                        <h3>No active members</h3>
+                        <p>Check back soon for new members!</p>
+                    </div>
+                `;
+                totalCount.textContent = '0';
+                return;
+            }
+
+            totalCount.textContent = activeMembers.length;
+
+            // Pagination
+            const start = (currentPage - 1) * perPage;
+            const pageMembers = activeMembers.slice(start, start + perPage);
+
+            grid.innerHTML = pageMembers.map(member => {
+                const photo = member.photo || 'https://randomuser.me/api/portraits/lego/1.jpg';
+                const name = member.name || 'Member';
+                const age = member.age || '?';
+                const location = member.location || 'Unknown';
+                const bio = member.bio || 'No bio yet.';
+                const interests = member.interests || [];
+                const verified = member.verified || false;
+                const premium = member.premium || false;
+                const online = member.online || false;
+                const isNew = member.createdAt ? (new Date() - new Date(member.createdAt)) < 30 * 24 * 60 * 60 * 1000 : false;
+
+                return `
+                    <div class="member-card" data-id="${member.id}">
+                        <div class="member-card__image">
+                            <img src="${photo}" alt="${name}" loading="lazy">
+                            <div class="member-card__badges">
+                                ${verified ? '<span class="badge badge--verified">✓ Verified</span>' : ''}
+                                ${premium ? '<span class="badge badge--premium">⭐ Premium</span>' : ''}
+                                ${isNew ? '<span class="badge badge--new">🆕 New</span>' : ''}
+                            </div>
+                            <div class="member-card__status">
+                                <span class="status-dot status-dot--${online ? 'online' : 'offline'}"></span>
+                                ${online ? 'Online' : 'Offline'}
+                            </div>
                         </div>
-                        <div class="member-card__status">
-                            <span class="status-dot status-dot--${member.online ? 'online' : 'offline'}"></span>
-                            ${member.online ? 'Online' : 'Offline'}
+                        <div class="member-card__info">
+                            <div class="member-card__name">
+                                <h3>${name}</h3>
+                                <span class="age">${age}</span>
+                            </div>
+                            <div class="member-card__location">📍 ${location}</div>
+                            <div class="member-card__bio">${bio}</div>
+                            <div class="member-card__interests">
+                                ${interests.map(i => `<span class="interest-tag">#${i}</span>`).join('')}
+                            </div>
+                            <div class="member-card__actions">
+                                <button class="btn-view" onclick="viewProfile('${member.id}')">👤 View</button>
+                                <button class="btn-message" onclick="sendMessage('${member.id}')">💬 Message</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="member-card__info">
-                        <div class="member-card__name">
-                            <h3>${member.name}</h3>
-                            <span class="age">${member.age}</span>
-                        </div>
-                        <div class="member-card__location">📍 ${member.location}</div>
-                        <div class="member-card__bio">${member.bio}</div>
-                        <div class="member-card__interests">
-                            ${member.interests.map(i => `<span class="interest-tag">#${i}</span>`).join('')}
-                        </div>
-                        <div class="member-card__actions">
-                            <button class="btn-view" onclick="viewProfile(${member.id})">👤 View</button>
-                            <button class="btn-message" onclick="sendMessage(${member.id})">💬 Message</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+
+            updatePagination(activeMembers.length);
         }
-
-        // ============================================================
-        // VIEW TOGGLE
-        // ============================================================
-        function setView(view) {
-            currentView = view;
-            const grid = document.getElementById('members-grid');
-            grid.className = 'members-grid' + (view === 'list' ? ' list-view' : '');
-
-            document.getElementById('grid-view').classList.toggle('active', view === 'grid');
-            document.getElementById('list-view').classList.toggle('active', view === 'list');
-
-            renderMembers(filteredMembers);
-        }
-
-        // ============================================================
-        // FILTERS
-        // ============================================================
-        function applyFilters() {
-            const gender = document.getElementById('filter-gender').value;
-            const status = document.getElementById('filter-status').value;
-            const maxAge = parseInt(document.getElementById('filter-age').value);
-            const verified = document.getElementById('filter-verified').value;
-
-            filteredMembers = membersData.filter(member => {
-                if (gender !== 'all' && member.gender !== gender) return false;
-                if (status !== 'all' && member.online !== (status === 'online')) return false;
-                if (member.age > maxAge) return false;
-                if (verified === 'verified' && !member.verified) return false;
-                return true;
-            });
-
-            currentPage = 1;
-            renderMembers(filteredMembers);
-            updatePagination();
-        }
-
-        function resetFilters() {
-            document.getElementById('filter-gender').value = 'all';
-            document.getElementById('filter-status').value = 'all';
-            document.getElementById('filter-age').value = '50';
-            document.getElementById('age-display').textContent = '50';
-            document.getElementById('filter-verified').value = 'all';
-
-            filteredMembers = [...membersData];
-            currentPage = 1;
-            renderMembers(filteredMembers);
-            updatePagination();
-        }
-
-        // Age range display
-        document.getElementById('filter-age').addEventListener('input', function() {
-            document.getElementById('age-display').textContent = this.value;
-        });
 
         // ============================================================
         // PAGINATION
         // ============================================================
-        function updatePagination() {
-            const total = filteredMembers.length;
+        function updatePagination(total) {
             const pages = Math.ceil(total / perPage);
-            const pagination = document.getElementById('pagination');
 
             if (pages <= 1) {
                 pagination.innerHTML = '';
@@ -1020,44 +883,100 @@
             pagination.innerHTML = html;
         }
 
-        function changePage(direction) {
-            const total = filteredMembers.length;
+        window.changePage = function(direction) {
+            const total = filteredMembers.filter(m => m.status === 'active').length;
             const pages = Math.ceil(total / perPage);
 
             if (direction === 'prev' && currentPage > 1) currentPage--;
             if (direction === 'next' && currentPage < pages) currentPage++;
 
             renderMembers(filteredMembers);
-            updatePagination();
         }
 
-        function goToPage(page) {
+        window.goToPage = function(page) {
             currentPage = page;
             renderMembers(filteredMembers);
-            updatePagination();
         }
+
+        // ============================================================
+        // VIEW TOGGLE
+        // ============================================================
+        window.setView = function(view) {
+            currentView = view;
+            grid.className = 'members-grid' + (view === 'list' ? ' list-view' : '');
+
+            document.getElementById('grid-view').classList.toggle('active', view === 'grid');
+            document.getElementById('list-view').classList.toggle('active', view === 'list');
+
+            renderMembers(filteredMembers);
+        }
+
+        // ============================================================
+        // FILTERS
+        // ============================================================
+        window.applyFilters = function() {
+            const gender = document.getElementById('filter-gender').value;
+            const status = document.getElementById('filter-status').value;
+            const maxAge = parseInt(document.getElementById('filter-age').value);
+            const verified = document.getElementById('filter-verified').value;
+
+            filteredMembers = allMembers.filter(member => {
+                if (gender !== 'all' && member.gender !== gender) return false;
+                if (status !== 'all' && member.online !== (status === 'online')) return false;
+                if (member.age && member.age > maxAge) return false;
+                if (verified === 'verified' && !member.verified) return false;
+                return true;
+            });
+
+            currentPage = 1;
+            renderMembers(filteredMembers);
+        }
+
+        window.resetFilters = function() {
+            document.getElementById('filter-gender').value = 'all';
+            document.getElementById('filter-status').value = 'all';
+            document.getElementById('filter-age').value = '50';
+            document.getElementById('age-display').textContent = '50';
+            document.getElementById('filter-verified').value = 'all';
+
+            filteredMembers = [...allMembers];
+            currentPage = 1;
+            renderMembers(filteredMembers);
+        }
+
+        // Age range display
+        document.getElementById('filter-age').addEventListener('input', function() {
+            document.getElementById('age-display').textContent = this.value;
+        });
 
         // ============================================================
         // ACTIONS
         // ============================================================
-        function viewProfile(id) {
-            const member = membersData.find(m => m.id === id);
-            alert(`👤 Viewing profile: ${member.name}\n📧 ${member.email || 'No email provided'}\n📍 ${member.location}\n💬 "${member.bio}"`);
+        window.viewProfile = function(id) {
+            const member = allMembers.find(m => m.id === id);
+            if (!member) {
+                alert('Member not found');
+                return;
+            }
+            alert(`👤 ${member.name}\n📧 ${member.email || 'No email'}\n📍 ${member.location || 'Unknown'}\n💬 ${member.bio || 'No bio'}`);
         }
 
-        function sendMessage(id) {
-            const member = membersData.find(m => m.id === id);
-            alert(`💬 Start a conversation with ${member.name}!\n\nThis will open the messaging feature.`);
+        window.sendMessage = function(id) {
+            const member = allMembers.find(m => m.id === id);
+            if (!member) {
+                alert('Member not found');
+                return;
+            }
+            alert(`💬 Start a conversation with ${member.name}!`);
         }
 
         // ============================================================
-        // INIT
+        // INITIAL RENDER
         // ============================================================
-        renderMembers(filteredMembers);
-        updatePagination();
+        // The onSnapshot listener will handle initial render
 
-        console.log('💎 ClassyDate Members Page loaded!');
-        console.log(`📊 ${membersData.length} members loaded`);
+        console.log('💎 ClassyDate Members Page with Firebase!');
+        console.log('🔥 Connected to Firebase Firestore');
     </script>
 </body>
 </html>
