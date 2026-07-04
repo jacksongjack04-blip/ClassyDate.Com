@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=yes" />
-    <title>ClassyDate - Admin Panel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <title>Members | ClassyDate</title>
+    <meta name="description" content="Browse ClassyDate members and find meaningful connections.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        * {
+        /* ============================================================
+           CLASSYDATE - Members Page
+           ============================================================ */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
@@ -21,6 +24,8 @@
             background: #0D0B1A;
             color: #FAF8F5;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
         }
 
@@ -29,6 +34,7 @@
             color: inherit;
         }
 
+        /* ---------- HEADER ---------- */
         .cb-shell-header {
             position: fixed;
             top: 0;
@@ -99,13 +105,17 @@
             transform: translateY(-2px);
         }
 
-        .admin-wrapper {
+        /* ---------- MEMBERS CONTAINER ---------- */
+        .members-wrapper {
+            flex: 1;
+            padding: 100px 20px 60px;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 100px 20px 60px;
+            width: 100%;
         }
 
-        .admin-header {
+        /* ---------- HEADER SECTION ---------- */
+        .members-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -114,552 +124,443 @@
             margin-bottom: 30px;
         }
 
-        .admin-header h1 {
+        .members-header h1 {
             font-family: 'Georgia', serif;
             font-size: 32px;
             color: #FAF8F5;
         }
 
-        .admin-header h1 span {
+        .members-header h1 span {
             color: #FF2D55;
         }
 
-        .admin-header .badge-admin {
-            background: rgba(255, 45, 85, 0.12);
-            color: #FF2D55;
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
+        .members-header .member-count {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 14px;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card-admin {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 16px;
-            padding: 20px 24px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            transition: all 0.3s ease;
+        .view-toggle {
             display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .stat-card-admin:hover {
-            border-color: rgba(255, 45, 85, 0.1);
-        }
-
-        .stat-card-admin .stat-icon {
-            font-size: 28px;
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 45, 85, 0.08);
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .stat-card-admin .stat-info {
-            flex: 1;
-        }
-
-        .stat-card-admin .stat-number {
-            font-size: 28px;
-            font-weight: 700;
-            color: #FF2D55;
-            font-family: 'Georgia', serif;
-            line-height: 1;
-        }
-
-        .stat-card-admin .stat-label {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: 4px;
-        }
-
-        .admin-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 16px;
+            padding: 4px;
             border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .admin-toolbar-left {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .admin-toolbar-left input {
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            color: #FAF8F5;
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            min-width: 200px;
-        }
-
-        .admin-toolbar-left input:focus {
-            border-color: #FF2D55;
-        }
-
-        .admin-toolbar-left input::placeholder {
-            color: rgba(255, 255, 255, 0.2);
-        }
-
-        .admin-toolbar-left select {
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            color: #FAF8F5;
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .admin-toolbar-left select option {
-            background: #1A1A2E;
-            color: #FAF8F5;
-        }
-
-        .admin-toolbar-right {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-admin {
-            padding: 10px 24px;
+        .view-toggle button {
+            padding: 8px 16px;
+            background: none;
             border: none;
             border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.3);
             cursor: pointer;
+            font-size: 14px;
             transition: all 0.3s ease;
             font-family: inherit;
-            display: inline-flex;
+        }
+
+        .view-toggle button.active {
+            background: rgba(255, 45, 85, 0.12);
+            color: #FF2D55;
+        }
+
+        .view-toggle button:hover:not(.active) {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ---------- FILTERS ---------- */
+        .filters-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .btn-admin--add {
-            background: linear-gradient(135deg, #FF2D55, #FF0040);
-            color: #FAF8F5;
-        }
-
-        .btn-admin--add:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(255, 45, 85, 0.3);
-        }
-
-        .btn-admin--export {
-            background: rgba(255, 255, 255, 0.04);
-            color: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .btn-admin--export:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .btn-admin--edit {
-            background: rgba(255, 215, 0, 0.08);
-            color: #FFD700;
-            border: 1px solid rgba(255, 215, 0, 0.08);
-            padding: 4px 12px;
-            font-size: 12px;
-        }
-
-        .btn-admin--edit:hover {
-            background: rgba(255, 215, 0, 0.15);
-        }
-
-        .btn-admin--delete {
-            background: rgba(255, 45, 85, 0.08);
-            color: #FF2D55;
-            border: 1px solid rgba(255, 45, 85, 0.08);
-            padding: 4px 12px;
-            font-size: 12px;
-        }
-
-        .btn-admin--delete:hover {
-            background: rgba(255, 45, 85, 0.2);
-        }
-
-        .admin-table-wrapper {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            overflow: hidden;
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .admin-table th {
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .admin-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            vertical-align: middle;
-        }
-
-        .admin-table tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .admin-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .member-cell {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .member-cell img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: #1A1A2E;
-        }
-
-        .member-cell .name {
-            color: #FAF8F5;
+        .filter-group label {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
             font-weight: 500;
         }
 
-        .member-cell .email {
-            font-size: 12px;
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            color: #FAF8F5;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: #FF2D55;
+        }
+
+        .filter-group select option {
+            background: #1A1A2E;
+            color: #FAF8F5;
+        }
+
+        .filter-group input::placeholder {
             color: rgba(255, 255, 255, 0.2);
         }
 
-        .actions-cell {
+        .filter-group input[type="range"] {
+            width: 120px;
+            padding: 0;
+            background: transparent;
+            accent-color: #FF2D55;
+            cursor: pointer;
+        }
+
+        .filter-group .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            min-width: 60px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .filter-actions button {
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-apply {
+            background: #FF2D55;
+            color: #0D0B1A;
+        }
+
+        .btn-apply:hover {
+            background: #FF0040;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* ---------- MEMBERS GRID ---------- */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        /* ---------- MEMBER CARD ---------- */
+        .member-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .member-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 45, 85, 0.15);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .member-card__image {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: #1A1A2E;
+        }
+
+        .member-card__image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .member-card:hover .member-card__image img {
+            transform: scale(1.05);
+        }
+
+        .member-card__badges {
+            position: absolute;
+            top: 12px;
+            left: 12px;
             display: flex;
             gap: 6px;
+            flex-wrap: wrap;
         }
 
-        .badge-small {
+        .badge {
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge--verified {
+            background: rgba(0, 200, 81, 0.2);
+            color: #00C851;
+            border: 1px solid rgba(0, 200, 81, 0.2);
+        }
+
+        .badge--premium {
+            background: rgba(255, 215, 0, 0.15);
+            color: #FFD700;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+        }
+
+        .badge--new {
+            background: rgba(255, 45, 85, 0.15);
+            color: #FF2D55;
+            border: 1px solid rgba(255, 45, 85, 0.15);
+        }
+
+        .member-card__status {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(13, 11, 26, 0.8);
+            backdrop-filter: blur(8px);
+            padding: 4px 12px 4px 8px;
+            border-radius: 50px;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot--online {
+            background: #00C851;
+            animation: pulse-dot 2s infinite;
+        }
+
+        .status-dot--offline {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .member-card__info {
+            padding: 16px 18px 18px;
+        }
+
+        .member-card__name {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .member-card__name h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #FAF8F5;
+        }
+
+        .member-card__name .age {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+            font-size: 15px;
+        }
+
+        .member-card__location {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .member-card__bio {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            margin-top: 8px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .member-card__interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .interest-tag {
             padding: 2px 10px;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 50px;
             font-size: 11px;
-            font-weight: 600;
+            color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .badge-small--verified {
-            background: rgba(0, 200, 81, 0.15);
-            color: #00C851;
-        }
-
-        .badge-small--premium {
-            background: rgba(255, 215, 0, 0.12);
-            color: #FFD700;
-        }
-
-        .badge-small--pending {
-            background: rgba(255, 165, 0, 0.12);
-            color: #FFA500;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
+        .member-card__actions {
             display: flex;
+            gap: 8px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .modal {
-            background: #1A1A2E;
-            border-radius: 24px;
-            max-width: 560px;
-            width: 100%;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-            max-height: 90vh;
-            overflow-y: auto;
+        .member-card__actions button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
 
-        .modal h2 {
-            font-family: 'Georgia', serif;
+        .btn-view {
+            background: rgba(255, 45, 85, 0.08);
+            color: #FF2D55;
+        }
+
+        .btn-view:hover {
+            background: rgba(255, 45, 85, 0.15);
+        }
+
+        .btn-message {
+            background: #FF2D55;
+            color: #0D0B1A;
+        }
+
+        .btn-message:hover {
+            background: #FF0040;
+            transform: translateY(-2px);
+        }
+
+        /* ---------- LIST VIEW ---------- */
+        .members-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .members-grid.list-view .member-card {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .members-grid.list-view .member-card__image {
+            width: 180px;
+            height: auto;
+            min-height: 180px;
+            flex-shrink: 0;
+        }
+
+        .members-grid.list-view .member-card__info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .members-grid.list-view .member-card__actions {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        /* ---------- EMPTY STATE ---------- */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
             font-size: 24px;
             color: #FAF8F5;
             margin-bottom: 8px;
         }
 
-        .modal .modal-subtitle {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 4px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            color: #FAF8F5;
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #FF2D55;
-            background: rgba(255, 45, 85, 0.04);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .photo-upload-area {
-            border: 2px dashed rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .photo-upload-area:hover {
-            border-color: #FF2D55;
-            background: rgba(255, 45, 85, 0.05);
-        }
-
-        .photo-upload-area .upload-icon {
-            font-size: 32px;
-            color: rgba(255, 255, 255, 0.3);
-            margin-bottom: 8px;
-        }
-
-        .photo-upload-area .upload-text {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 14px;
-        }
-
-        .photo-upload-area .upload-hint {
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        .photo-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .photo-preview .preview-item {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .photo-preview .preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .photo-preview .preview-item .remove-btn {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .photo-preview .preview-item .remove-btn:hover {
+        .empty-state .btn-join {
+            margin-top: 16px;
+            padding: 12px 32px;
             background: #FF2D55;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .modal-actions button {
-            flex: 1;
-            padding: 12px;
+            color: #0D0B1A;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: inherit;
         }
 
-        .btn-modal-save {
-            background: linear-gradient(135deg, #FF2D55, #FF0040);
-            color: #FAF8F5;
-        }
-
-        .btn-modal-save:hover {
+        .empty-state .btn-join:hover {
+            background: #FF0040;
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(255, 45, 85, 0.3);
         }
 
-        .btn-modal-cancel {
-            background: rgba(255, 255, 255, 0.04);
-            color: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .btn-modal-cancel:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 16px 24px;
-            border-radius: 12px;
-            background: #1A1A2E;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
-            z-index: 2000;
-            font-size: 14px;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            max-width: 400px;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success {
-            border-color: rgba(0, 200, 81, 0.2);
-        }
-
-        .toast.error {
-            border-color: rgba(255, 45, 85, 0.2);
-        }
-
-        .toast .toast-icon {
-            margin-right: 8px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: rgba(255, 255, 255, 0.3);
-        }
-
-        .empty-state .icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        .empty-state h3 {
-            color: #FAF8F5;
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
+        /* ---------- PAGINATION ---------- */
         .pagination {
             display: flex;
             justify-content: center;
             gap: 8px;
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            margin-top: 40px;
         }
 
         .pagination button {
-            padding: 6px 14px;
+            padding: 8px 16px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 6px;
-            color: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.4);
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: inherit;
@@ -675,114 +576,80 @@
             border-color: rgba(255, 45, 85, 0.15);
         }
 
+        /* ---------- LOADING ---------- */
+        .loading-spinner {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+
+        .loading-spinner .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.05);
+            border-top: 3px solid #FF2D55;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-spinner p {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 14px;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
         @media (max-width: 768px) {
-            .admin-header {
+            .members-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .admin-toolbar {
+            .filters-section {
                 flex-direction: column;
                 align-items: stretch;
             }
 
-            .admin-toolbar-left {
+            .filter-group {
+                flex-wrap: wrap;
+            }
+
+            .filter-group select,
+            .filter-group input {
+                min-width: 100%;
+            }
+
+            .filter-actions {
+                margin-left: 0;
+            }
+
+            .members-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .members-grid.list-view .member-card {
                 flex-direction: column;
+            }
+
+            .members-grid.list-view .member-card__image {
                 width: 100%;
+                height: 180px;
             }
 
-            .admin-toolbar-left input,
-            .admin-toolbar-left select {
-                width: 100%;
-                min-width: unset;
-            }
-
-            .admin-toolbar-right {
-                width: 100%;
-            }
-
-            .admin-toolbar-right .btn-admin {
-                flex: 1;
-                justify-content: center;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-
-            .stat-card-admin {
-                padding: 16px;
-            }
-
-            .stat-card-admin .stat-number {
-                font-size: 22px;
-            }
-
-            .admin-table {
+            .view-toggle button {
+                padding: 6px 12px;
                 font-size: 12px;
-            }
-
-            .admin-table th,
-            .admin-table td {
-                padding: 8px 10px;
-            }
-
-            .admin-table .member-cell img {
-                width: 30px;
-                height: 30px;
-            }
-
-            .modal {
-                padding: 24px;
-            }
-
-            .modal .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .actions-cell {
-                flex-direction: column;
-                gap: 4px;
-            }
-
-            .actions-cell .btn-admin {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .modal-actions {
-                flex-direction: column;
             }
         }
 
         @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-
-            .stat-card-admin {
-                padding: 12px 14px;
-            }
-
-            .stat-card-admin .stat-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
-            }
-
-            .stat-card-admin .stat-number {
-                font-size: 18px;
-            }
-
-            .stat-card-admin .stat-label {
-                font-size: 11px;
-            }
-
-            .photo-preview .preview-item {
-                width: 60px;
-                height: 60px;
+            .members-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -800,217 +667,103 @@
             </a>
 
             <div class="cb-shell-actions">
-                <a href="members.html" class="cb-shell-button cb-shell-button--secondary">Members</a>
-                <a href="login.html" class="cb-shell-button cb-shell-button--secondary">Log in</a>
-                <a href="admin.html" class="cb-shell-button cb-shell-button--primary">Admin</a>
+                <a href="signup.html" class="cb-shell-button cb-shell-button--secondary">Join</a>
+                <a href="login.html" class="cb-shell-button cb-shell-button--primary">Log in</a>
             </div>
         </div>
     </header>
 
     <!-- ============================================================ -->
-    <!-- ADMIN PAGE                                                  -->
+    <!-- MEMBERS PAGE                                                 -->
     <!-- ============================================================ -->
-    <main class="admin-wrapper">
+    <main class="members-wrapper">
         <!-- Header -->
-        <div class="admin-header">
+        <div class="members-header">
             <div>
-                <h1>Admin <span>Dashboard</span></h1>
-                <span class="badge-admin">🔒 Admin Access</span>
+                <h1>Browse <span>Members</span></h1>
+                <span class="member-count">Showing <strong id="total-count">0</strong> members</span>
             </div>
-            <button class="btn-admin btn-admin--add" onclick="openAddModal()">➕ Add New Member</button>
-        </div>
-
-        <!-- Stats - 2 Columns -->
-        <div class="stats-grid">
-            <div class="stat-card-admin">
-                <div class="stat-icon">👥</div>
-                <div class="stat-info">
-                    <div class="stat-number" id="total-members">0</div>
-                    <div class="stat-label">Total Members</div>
-                </div>
-            </div>
-            <div class="stat-card-admin">
-                <div class="stat-icon">🟢</div>
-                <div class="stat-info">
-                    <div class="stat-number" id="online-members">0</div>
-                    <div class="stat-label">Online Now</div>
-                </div>
-            </div>
-            <div class="stat-card-admin">
-                <div class="stat-icon">✅</div>
-                <div class="stat-info">
-                    <div class="stat-number" id="verified-members">0</div>
-                    <div class="stat-label">Verified</div>
-                </div>
-            </div>
-            <div class="stat-card-admin">
-                <div class="stat-icon">🆕</div>
-                <div class="stat-info">
-                    <div class="stat-number" id="new-members">0</div>
-                    <div class="stat-label">New This Month</div>
-                </div>
+            <div class="view-toggle">
+                <button class="active" onclick="setView('grid')" id="grid-view">▦ Grid</button>
+                <button onclick="setView('list')" id="list-view">☰ List</button>
             </div>
         </div>
 
-        <!-- Toolbar -->
-        <div class="admin-toolbar">
-            <div class="admin-toolbar-left">
-                <input type="text" id="search-input" placeholder="🔍 Search members..." oninput="filterMembers()">
-                <select id="filter-status" onchange="filterMembers()">
-                    <option value="all">All Status</option>
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <label>Gender</label>
+                <select id="filter-gender">
+                    <option value="all">All</option>
+                    <option value="male">Men</option>
+                    <option value="female">Women</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Status</label>
+                <select id="filter-status">
+                    <option value="all">All</option>
                     <option value="online">Online</option>
                     <option value="offline">Offline</option>
                 </select>
-                <select id="filter-verified" onchange="filterMembers()">
+            </div>
+
+            <div class="filter-group">
+                <label>Age</label>
+                <input type="range" id="filter-age" min="18" max="80" value="50">
+                <span class="range-labels">
+                    <span>18</span>
+                    <span id="age-display">50</span>
+                    <span>80</span>
+                </span>
+            </div>
+
+            <div class="filter-group">
+                <label>Verified</label>
+                <select id="filter-verified">
                     <option value="all">All</option>
-                    <option value="verified">Verified</option>
-                    <option value="unverified">Unverified</option>
+                    <option value="verified">Verified Only</option>
                 </select>
             </div>
-            <div class="admin-toolbar-right">
-                <button class="btn-admin btn-admin--export" onclick="exportData()">📥 Export</button>
+
+            <div class="filter-actions">
+                <button class="btn-apply" onclick="applyFilters()">Apply</button>
+                <button class="btn-reset" onclick="resetFilters()">Reset</button>
             </div>
         </div>
 
-        <!-- Members Table -->
-        <div class="admin-table-wrapper">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Member</th>
-                        <th>Gender</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Verified</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-table-body">
-                    <tr><td colspan="6" style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);">Loading members...</td></tr>
-                </tbody>
-            </table>
-            <div class="pagination" id="admin-pagination"></div>
+        <!-- Members Grid -->
+        <div class="members-grid" id="members-grid">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading members...</p>
+            </div>
         </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
     </main>
-
-    <!-- ============================================================ -->
-    <!-- MODAL - Add/Edit Member                                     -->
-    <!-- ============================================================ -->
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal">
-            <h2 id="modal-title">Add New Member</h2>
-            <p class="modal-subtitle" id="modal-subtitle">Fill in the details to add a new member.</p>
-
-            <form id="member-form">
-                <input type="hidden" id="edit-id" value="">
-
-                <div class="form-group">
-                    <label for="form-name">Full Name *</label>
-                    <input type="text" id="form-name" placeholder="John Doe" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="form-email">Email Address *</label>
-                    <input type="email" id="form-email" placeholder="john@example.com" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="form-age">Age *</label>
-                        <input type="number" id="form-age" placeholder="25" min="18" max="99" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="form-gender">Gender *</label>
-                        <select id="form-gender" required>
-                            <option value="">Select...</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="form-location">Location</label>
-                    <input type="text" id="form-location" placeholder="New York, USA">
-                </div>
-
-                <div class="form-group">
-                    <label for="form-bio">Bio</label>
-                    <textarea id="form-bio" placeholder="Write a short bio about this member..."></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="form-verified">Verified</label>
-                        <select id="form-verified">
-                            <option value="true">✅ Yes</option>
-                            <option value="false" selected>❌ No</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="form-premium">Premium</label>
-                        <select id="form-premium">
-                            <option value="true">⭐ Yes</option>
-                            <option value="false" selected>❌ No</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="form-interests">Interests (comma separated)</label>
-                    <input type="text" id="form-interests" placeholder="Travel, Coffee, Music">
-                </div>
-
-                <!-- ============================================================ -->
-                <!-- PHOTO UPLOAD - AT THE BOTTOM                                -->
-                <!-- ============================================================ -->
-                <div class="form-group">
-                    <label>Profile Photo</label>
-                    <div class="photo-upload-area" id="photo-upload-area" onclick="document.getElementById('photo-input').click()">
-                        <div class="upload-icon">📸</div>
-                        <div class="upload-text">Click to upload photo</div>
-                        <div class="upload-hint">Supports JPG, PNG, GIF (Max 5MB)</div>
-                    </div>
-                    <input type="file" id="photo-input" accept="image/*" style="display:none;" multiple>
-                    <div class="photo-preview" id="photo-preview"></div>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn-modal-save" id="modal-save-btn">💾 Save Member</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- TOAST                                                       -->
-    <!-- ============================================================ -->
-    <div class="toast" id="toast">
-        <span class="toast-icon" id="toast-icon">✅</span>
-        <span id="toast-message">Success!</span>
-    </div>
 
     <!-- ============================================================ -->
     <!-- SCRIPTS                                                      -->
     <!-- ============================================================ -->
+    <!-- Firebase SDK -->
     <script type="importmap">
         {
             "imports": {
                 "firebase/app": "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js",
-                "firebase/storage": "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js"
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"
             }
         }
     </script>
 
     <script type="module">
         // ============================================================
-        // FIREBASE CONFIG
+        // FIREBASE CONFIG - REPLACE WITH YOURS
         // ============================================================
         import { initializeApp } from "firebase/app";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot } from "firebase/firestore";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+        import { getFirestore, collection, getDocs, query, where, orderBy, onSnapshot } from "firebase/firestore";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCgBJtGQEXc8dOkU4tC-_E9GHAw3Oi4Euk",
@@ -1022,458 +775,265 @@
             measurementId: "G-B08EF8KDE6"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
         // ============================================================
         // STATE
         // ============================================================
-        let members = [];
+        let allMembers = [];
         let filteredMembers = [];
+        let currentView = 'grid';
         let currentPage = 1;
-        const perPage = 5;
-        let editingId = null;
-        let uploadedPhotoUrls = [];
+        const perPage = 6;
+        let isLoading = true;
 
         // ============================================================
         // DOM REFS
         // ============================================================
-        const tbody = document.getElementById('admin-table-body');
-        const pagination = document.getElementById('admin-pagination');
-        const modalOverlay = document.getElementById('modal-overlay');
-        const memberForm = document.getElementById('member-form');
-        const editIdInput = document.getElementById('edit-id');
-        const toast = document.getElementById('toast');
-        const photoInput = document.getElementById('photo-input');
-        const photoPreview = document.getElementById('photo-preview');
+        const grid = document.getElementById('members-grid');
+        const pagination = document.getElementById('pagination');
+        const totalCount = document.getElementById('total-count');
 
         // ============================================================
         // LISTEN TO FIREBASE REALTIME UPDATES
         // ============================================================
-        const q = query(collection(db, "members"), orderBy("createdAt", "desc"));
+        const q = query(collection(db, "members"), where("status", "==", "active"), orderBy("createdAt", "desc"));
 
         onSnapshot(q, (snapshot) => {
-            members = [];
+            allMembers = [];
             snapshot.forEach((doc) => {
-                members.push({ id: doc.id, ...doc.data() });
+                allMembers.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
             });
-            filteredMembers = [...members];
-            updateStats();
-            filterMembers();
+            isLoading = false;
+            filteredMembers = [...allMembers];
+            applyFilters();
         }, (error) => {
             console.error('Error loading members:', error);
-            showToast('Error loading members from Firebase', 'error');
-        });
-
-        // ============================================================
-        // PHOTO UPLOAD HANDLING
-        // ============================================================
-        photoInput.addEventListener('change', async function(e) {
-            const files = Array.from(e.target.files);
-            
-            if (files.length === 0) return;
-
-            showToast(`📸 Uploading ${files.length} photo(s)...`, 'info');
-
-            for (const file of files) {
-                try {
-                    const timestamp = Date.now();
-                    const filename = `members/${timestamp}_${file.name}`;
-                    const storageRef = ref(storage, filename);
-
-                    const snapshot = await uploadBytes(storageRef, file);
-                    const downloadURL = await getDownloadURL(snapshot.ref);
-
-                    uploadedPhotoUrls.push(downloadURL);
-                    addPhotoPreview(downloadURL);
-
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    showToast('❌ Failed to upload: ' + file.name, 'error');
-                }
-            }
-
-            showToast(`✅ ${files.length} photo(s) uploaded!`, 'success');
-            photoInput.value = '';
-        });
-
-        function addPhotoPreview(url) {
-            const previewItem = document.createElement('div');
-            previewItem.className = 'preview-item';
-            previewItem.innerHTML = `
-                <img src="${url}" alt="Preview">
-                <button class="remove-btn" onclick="removePhoto('${url}')">×</button>
+            grid.innerHTML = `
+                <div class="empty-state" style="grid-column:1/-1;">
+                    <div class="icon">⚠️</div>
+                    <h3>Error loading members</h3>
+                    <p>Please refresh the page or try again later.</p>
+                </div>
             `;
-            photoPreview.appendChild(previewItem);
-        }
-
-        window.removePhoto = function(url) {
-            uploadedPhotoUrls = uploadedPhotoUrls.filter(u => u !== url);
-            const items = photoPreview.querySelectorAll('.preview-item');
-            for (const item of items) {
-                const img = item.querySelector('img');
-                if (img && img.src === url) {
-                    item.remove();
-                }
-            }
-        };
-
-        function clearPhotoPreviews() {
-            photoPreview.innerHTML = '';
-            uploadedPhotoUrls = [];
-        }
+            isLoading = false;
+        });
 
         // ============================================================
-        // STATS
+        // RENDER FUNCTIONS
         // ============================================================
-        function updateStats() {
-            const total = members.length;
-            const online = members.filter(m => m.online).length;
-            const verified = members.filter(m => m.verified).length;
-            const now = new Date();
-            const thisMonth = now.getMonth();
-            const thisYear = now.getFullYear();
-            const newThisMonth = members.filter(m => {
-                const joined = m.joined ? new Date(m.joined) : null;
-                return joined && joined.getMonth() === thisMonth && joined.getFullYear() === thisYear;
-            }).length;
-
-            document.getElementById('total-members').textContent = total;
-            document.getElementById('online-members').textContent = online;
-            document.getElementById('verified-members').textContent = verified;
-            document.getElementById('new-members').textContent = newThisMonth;
-        }
-
-        // ============================================================
-        // FILTER
-        // ============================================================
-        window.filterMembers = function() {
-            const search = document.getElementById('search-input').value.toLowerCase().trim();
-            const statusFilter = document.getElementById('filter-status').value;
-            const verifiedFilter = document.getElementById('filter-verified').value;
-
-            filteredMembers = members.filter(m => {
-                const matchSearch = (m.name || '').toLowerCase().includes(search) ||
-                    (m.email || '').toLowerCase().includes(search) ||
-                    (m.location || '').toLowerCase().includes(search);
-                const matchStatus = statusFilter === 'all' ||
-                    (statusFilter === 'online' && m.online) ||
-                    (statusFilter === 'offline' && !m.online);
-                const matchVerified = verifiedFilter === 'all' ||
-                    (verifiedFilter === 'verified' && m.verified) ||
-                    (verifiedFilter === 'unverified' && !m.verified);
-                return matchSearch && matchStatus && matchVerified;
-            });
-
-            currentPage = 1;
-            renderTable();
-            renderPagination();
-        }
-
-        // ============================================================
-        // RENDER TABLE
-        // ============================================================
-        function renderTable() {
-            if (members.length === 0 && filteredMembers.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <div class="icon">👤</div>
-                                <h3>No members yet</h3>
-                                <p>Add your first member using the "Add New Member" button above.</p>
-                            </div>
-                        </td>
-                    </tr>
+        function renderMembers(members) {
+            if (isLoading) {
+                grid.innerHTML = `
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>Loading members...</p>
+                    </div>
                 `;
                 return;
             }
 
+            // Show only active members
+            const activeMembers = members.filter(m => m.status === 'active');
+
+            if (activeMembers.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <div class="icon">💎</div>
+                        <h3>No Members Yet</h3>
+                        <p>Be the first to join ClassyDate!</p>
+                        <button class="btn-join" onclick="window.location.href='signup.html'">Join Free</button>
+                    </div>
+                `;
+                totalCount.textContent = '0';
+                pagination.innerHTML = '';
+                return;
+            }
+
+            totalCount.textContent = activeMembers.length;
+
+            // Pagination
             const start = (currentPage - 1) * perPage;
-            const pageMembers = filteredMembers.slice(start, start + perPage);
+            const pageMembers = activeMembers.slice(start, start + perPage);
 
-            if (pageMembers.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <div class="icon">🔍</div>
-                                <h3>No results found</h3>
-                                <p>Try adjusting your search or filters.</p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = pageMembers.map(m => {
-                const photo = m.photo || '';
-                const name = m.name || 'Unknown';
-                const email = m.email || 'No email';
-                const location = m.location || '—';
-                const gender = m.gender || '—';
-                const online = m.online || false;
-                const verified = m.verified || false;
-                const premium = m.premium || false;
+            grid.innerHTML = pageMembers.map(member => {
+                const photo = member.photo || '';
+                const name = member.name || 'Member';
+                const age = member.age || '?';
+                const location = member.location || 'Unknown';
+                const bio = member.bio || 'No bio yet.';
+                const interests = member.interests || [];
+                const verified = member.verified || false;
+                const premium = member.premium || false;
+                const online = member.online || false;
+                const isNew = member.createdAt ? (new Date() - new Date(member.createdAt)) < 30 * 24 * 60 * 60 * 1000 : false;
 
                 return `
-                    <tr>
-                        <td>
-                            <div class="member-cell">
-                                ${photo ? `<img src="${photo}" alt="${name}">` : `<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>`}
-                                <div>
-                                    <div class="name">${name}</div>
-                                    <div class="email">${email}</div>
-                                </div>
+                    <div class="member-card" data-id="${member.id}">
+                        <div class="member-card__image">
+                            ${photo ? `<img src="${photo}" alt="${name}" loading="lazy">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;color:rgba(255,255,255,0.1);">👤</div>`}
+                            <div class="member-card__badges">
+                                ${verified ? '<span class="badge badge--verified">✓ Verified</span>' : ''}
+                                ${premium ? '<span class="badge badge--premium">⭐ Premium</span>' : ''}
+                                ${isNew ? '<span class="badge badge--new">🆕 New</span>' : ''}
                             </div>
-                        </td>
-                        <td>${gender === 'male' ? '👨 Male' : gender === 'female' ? '👩 Female' : '—'}</td>
-                        <td>${location}</td>
-                        <td>
-                            <span style="display:flex;align-items:center;gap:6px;">
-                                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${online ? '#00C851' : 'rgba(255,255,255,0.2)'};"></span>
+                            <div class="member-card__status">
+                                <span class="status-dot status-dot--${online ? 'online' : 'offline'}"></span>
                                 ${online ? 'Online' : 'Offline'}
-                            </span>
-                        </td>
-                        <td>
-                            ${verified ? '<span class="badge-small badge-small--verified">✅ Verified</span>' : '<span class="badge-small badge-small--pending">⏳ Pending</span>'}
-                            ${premium ? '<span class="badge-small badge-small--premium">⭐ Premium</span>' : ''}
-                        </td>
-                        <td>
-                            <div class="actions-cell">
-                                <button class="btn-admin btn-admin--edit" onclick="openEditModal('${m.id}')">✏️ Edit</button>
-                                <button class="btn-admin btn-admin--delete" onclick="deleteMember('${m.id}')">🗑️ Delete</button>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                        <div class="member-card__info">
+                            <div class="member-card__name">
+                                <h3>${name}</h3>
+                                <span class="age">${age}</span>
+                            </div>
+                            <div class="member-card__location">📍 ${location}</div>
+                            <div class="member-card__bio">${bio}</div>
+                            <div class="member-card__interests">
+                                ${interests.map(i => `<span class="interest-tag">#${i}</span>`).join('')}
+                            </div>
+                            <div class="member-card__actions">
+                                <button class="btn-view" onclick="viewProfile('${member.id}')">👤 View</button>
+                                <button class="btn-message" onclick="sendMessage('${member.id}')">💬 Message</button>
+                            </div>
+                        </div>
+                    </div>
                 `;
             }).join('');
+
+            updatePagination(activeMembers.length);
         }
 
         // ============================================================
         // PAGINATION
         // ============================================================
-        function renderPagination() {
-            const totalPages = Math.ceil(filteredMembers.length / perPage);
+        function updatePagination(total) {
+            const pages = Math.ceil(total / perPage);
 
-            if (totalPages <= 1) {
+            if (pages <= 1) {
                 pagination.innerHTML = '';
                 return;
             }
 
-            let html = '';
-            html += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>‹</button>`;
+            let html = `<button onclick="changePage('prev')" ${currentPage === 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>‹ Prev</button>`;
 
-            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+            for (let i = 1; i <= Math.min(pages, 5); i++) {
                 html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
             }
 
-            if (totalPages > 5) {
+            if (pages > 5) {
                 html += `<span style="color:rgba(255,255,255,0.2);">…</span>`;
-                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+                html += `<button onclick="goToPage(${pages})">${pages}</button>`;
             }
 
-            html += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>›</button>`;
+            html += `<button onclick="changePage('next')" ${currentPage === pages ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>Next ›</button>`;
 
             pagination.innerHTML = html;
         }
 
+        window.changePage = function(direction) {
+            const total = filteredMembers.filter(m => m.status === 'active').length;
+            const pages = Math.ceil(total / perPage);
+
+            if (direction === 'prev' && currentPage > 1) currentPage--;
+            if (direction === 'next' && currentPage < pages) currentPage++;
+
+            renderMembers(filteredMembers);
+        }
+
         window.goToPage = function(page) {
-            const totalPages = Math.ceil(filteredMembers.length / perPage);
-            if (page < 1 || page > totalPages) return;
             currentPage = page;
-            renderTable();
-            renderPagination();
+            renderMembers(filteredMembers);
         }
 
         // ============================================================
-        // CRUD OPERATIONS
+        // VIEW TOGGLE
         // ============================================================
+        window.setView = function(view) {
+            currentView = view;
+            grid.className = 'members-grid' + (view === 'list' ? ' list-view' : '');
 
-        window.openAddModal = function() {
-            editingId = null;
-            document.getElementById('modal-title').textContent = 'Add New Member';
-            document.getElementById('modal-subtitle').textContent = 'Fill in the details to add a new member.';
-            document.getElementById('modal-save-btn').textContent = '💾 Save Member';
-            memberForm.reset();
-            editIdInput.value = '';
-            clearPhotoPreviews();
-            modalOverlay.classList.add('active');
+            document.getElementById('grid-view').classList.toggle('active', view === 'grid');
+            document.getElementById('list-view').classList.toggle('active', view === 'list');
+
+            renderMembers(filteredMembers);
         }
 
-        window.openEditModal = function(id) {
-            const member = members.find(m => m.id === id);
+        // ============================================================
+        // FILTERS
+        // ============================================================
+        window.applyFilters = function() {
+            const gender = document.getElementById('filter-gender').value;
+            const status = document.getElementById('filter-status').value;
+            const maxAge = parseInt(document.getElementById('filter-age').value);
+            const verified = document.getElementById('filter-verified').value;
+
+            filteredMembers = allMembers.filter(member => {
+                if (gender !== 'all' && member.gender !== gender) return false;
+                if (status !== 'all' && member.online !== (status === 'online')) return false;
+                if (member.age && member.age > maxAge) return false;
+                if (verified === 'verified' && !member.verified) return false;
+                return true;
+            });
+
+            currentPage = 1;
+            renderMembers(filteredMembers);
+        }
+
+        window.resetFilters = function() {
+            document.getElementById('filter-gender').value = 'all';
+            document.getElementById('filter-status').value = 'all';
+            document.getElementById('filter-age').value = '50';
+            document.getElementById('age-display').textContent = '50';
+            document.getElementById('filter-verified').value = 'all';
+
+            filteredMembers = [...allMembers];
+            currentPage = 1;
+            renderMembers(filteredMembers);
+        }
+
+        // Age range display
+        document.getElementById('filter-age').addEventListener('input', function() {
+            document.getElementById('age-display').textContent = this.value;
+        });
+
+        // ============================================================
+        // ACTIONS
+        // ============================================================
+        window.viewProfile = function(id) {
+            const member = allMembers.find(m => m.id === id);
             if (!member) {
-                showToast('Member not found', 'error');
+                alert('Member not found');
                 return;
             }
-
-            editingId = id;
-            document.getElementById('modal-title').textContent = 'Edit Member';
-            document.getElementById('modal-subtitle').textContent = 'Update the member details below.';
-            document.getElementById('modal-save-btn').textContent = '💾 Update Member';
-
-            editIdInput.value = id;
-            document.getElementById('form-name').value = member.name || '';
-            document.getElementById('form-email').value = member.email || '';
-            document.getElementById('form-age').value = member.age || '';
-            document.getElementById('form-gender').value = member.gender || '';
-            document.getElementById('form-location').value = member.location || '';
-            document.getElementById('form-bio').value = member.bio || '';
-            document.getElementById('form-verified').value = member.verified ? 'true' : 'false';
-            document.getElementById('form-premium').value = member.premium ? 'true' : 'false';
-            document.getElementById('form-interests').value = (member.interests || []).join(', ');
-
-            clearPhotoPreviews();
-            if (member.photo) {
-                addPhotoPreview(member.photo);
-                uploadedPhotoUrls.push(member.photo);
-            }
-
-            modalOverlay.classList.add('active');
+            alert(`👤 ${member.name}\n📧 ${member.email || 'No email'}\n📍 ${member.location || 'Unknown'}\n💬 ${member.bio || 'No bio'}`);
         }
 
-        window.closeModal = function() {
-            modalOverlay.classList.remove('active');
-            clearPhotoPreviews();
-        }
-
-        // ============================================================
-        // SAVE MEMBER
-        // ============================================================
-        memberForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('form-name').value.trim();
-            const email = document.getElementById('form-email').value.trim();
-            const age = parseInt(document.getElementById('form-age').value);
-            const gender = document.getElementById('form-gender').value;
-            const location = document.getElementById('form-location').value.trim();
-            const bio = document.getElementById('form-bio').value.trim();
-            const verified = document.getElementById('form-verified').value === 'true';
-            const premium = document.getElementById('form-premium').value === 'true';
-            const interests = document.getElementById('form-interests').value.split(',').map(s => s.trim()).filter(Boolean);
-
-            if (!name || !email || !age || !gender) {
-                showToast('Please fill in all required fields.', 'error');
+        window.sendMessage = function(id) {
+            const member = allMembers.find(m => m.id === id);
+            if (!member) {
+                alert('Member not found');
                 return;
             }
-
-            const photo = uploadedPhotoUrls.length > 0 ? uploadedPhotoUrls[0] : '';
-            const editId = editIdInput.value;
-
-            try {
-                const formData = {
-                    name: name,
-                    email: email,
-                    age: age,
-                    gender: gender,
-                    location: location || '',
-                    bio: bio || '',
-                    photo: photo,
-                    interests: interests,
-                    verified: verified,
-                    premium: premium,
-                    online: false,
-                    joined: new Date().toISOString().slice(0, 10),
-                    // ✅ FIX: Always save status as "active"
-                    status: "active"
-                };
-
-                if (editId) {
-                    await updateDoc(doc(db, "members", editId), {
-                        ...formData,
-                        updatedAt: new Date().toISOString()
-                    });
-                    showToast(`✅ ${name} updated successfully!`, 'success');
-                } else {
-                    await addDoc(collection(db, "members"), {
-                        ...formData,
-                        createdAt: new Date().toISOString()
-                    });
-                    showToast(`✅ ${name} added successfully!`, 'success');
-                }
-
-                closeModal();
-                memberForm.reset();
-                clearPhotoPreviews();
-
-            } catch (error) {
-                console.error('Error saving member:', error);
-                showToast('Error saving member: ' + error.message, 'error');
-            }
-        });
-
-        // ============================================================
-        // DELETE MEMBER
-        // ============================================================
-        window.deleteMember = function(id) {
-            const member = members.find(m => m.id === id);
-            if (!member) return;
-
-            if (confirm(`Are you sure you want to delete ${member.name}?`)) {
-                deleteDoc(doc(db, "members", id))
-                    .then(() => {
-                        showToast(`🗑️ ${member.name} was deleted.`, 'success');
-                    })
-                    .catch((error) => {
-                        console.error('Error deleting member:', error);
-                        showToast('Error deleting member: ' + error.message, 'error');
-                    });
-            }
+            alert(`💬 Start a conversation with ${member.name}!`);
         }
-
-        // ============================================================
-        // EXPORT
-        // ============================================================
-        window.exportData = function() {
-            const dataStr = JSON.stringify(members, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `classydate_members_${new Date().toISOString().slice(0, 10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('📥 Members exported successfully!', 'success');
-        }
-
-        // ============================================================
-        // TOAST
-        // ============================================================
-        let toastTimeout;
-
-        function showToast(message, type = 'success') {
-            const icon = document.getElementById('toast-icon');
-            const msg = document.getElementById('toast-message');
-
-            toast.className = 'toast ' + type;
-            icon.textContent = type === 'success' ? '✅' : '⚠️';
-            msg.textContent = message;
-
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // ============================================================
-        // CLOSE MODAL ON OVERLAY CLICK
-        // ============================================================
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
 
         // ============================================================
         // INITIAL RENDER
         // ============================================================
-        console.log('💎 ClassyDate Admin Page with Photo Upload!');
-        console.log('🔥 Connected to Firebase Firestore & Storage');
-        console.log('✅ Members saved with status: "active"');
+        // The onSnapshot listener will handle initial render
+
+        console.log('💎 ClassyDate Members Page with Firebase!');
+        console.log('🔥 Connected to Firebase Firestore');
+        console.log('📊 Completely empty - no hardcoded data');
     </script>
 
 </body>
 </html>
+
+check keendly
